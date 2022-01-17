@@ -1,13 +1,28 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <el-config-provider :locale="locale">
+    <router-view></router-view>
+  </el-config-provider>
 </template>
+
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+export default defineComponent({
+  name: 'App',
+  setup() {
+    const i18n = useI18n()
+    const locale = computed(() => {
+      return {
+        name: i18n.locale.value,
+        el: i18n.messages.value[i18n.locale.value].el
+      }
+    })
+    return {
+      locale
+    }
+  }
+})
+</script>
 
 <style>
 #app {
@@ -16,6 +31,7 @@ import HelloWorld from './components/HelloWorld.vue'
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  width: 100%;
+  height: 100vh;
 }
 </style>
