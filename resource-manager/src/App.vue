@@ -5,20 +5,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import {ElConfigProvider} from 'element-plus'
+import { defineComponent } from 'vue'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+
 export default defineComponent({
   name: 'App',
-  setup() {
-    const i18n = useI18n()
-    const locale = computed(() => {
-      return {
-        name: i18n.locale.value,
-        el: i18n.messages.value[i18n.locale.value].el
-      }
-    })
+  components: {
+    [ElConfigProvider.name]: ElConfigProvider,
+  },
+  setup() {    
     return {
-      locale
+      locale: zhCn
     }
   }
 })
