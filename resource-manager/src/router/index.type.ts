@@ -25,7 +25,7 @@ export type Route = {
 /** @name 基础元数据的类型说明 */
 export interface Meta {
     /** @name 标题 @description 可供很多地方使用，在国际化版本中使用i18n对应的值，非国际化版本中使用真实的路由值 */
-    title: string
+    title?: string
     /** @name 使用的icon的值，可选 @description 对应自己Iconfont链接库进来，通常只在一级菜单使用，但二级三级使用也没问题 */
     icon?: string
     /** @name 是否需要缓存页面，目前仅支持二级菜单缓存，多级菜单缓存会在未来支持，可选 @default false */

@@ -1,13 +1,14 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import copy from 'rollup-plugin-copy';
+import { resolve } from 'path';
 
 const pathResolve = (dir: string): any => {
   return resolve(__dirname, ".", dir)
 }
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "",
+  base: "./",
   resolve: {
     alias: {
       '@': pathResolve("./src"),
@@ -17,24 +18,36 @@ export default defineConfig({
   server: {
     proxy: { // 代理配置
       '/api': {
-        target: "http://localhost:11200",
+        target: "https://to0-ai.com",
         ws: false,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        // rewrite: (path) => path.replace(/^\/api/, '')
       },
-      '/qywx': {
-        target: "https://qyapi.weixin.qq.com",
-        ws: false,
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/qywx/, '')
-      },
-      '/wx': {
-        target: "https://open.weixin.qq.com",
-        ws: false,
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/wx/, '')
-      }
     },
   },
-  plugins: [vue()]
+  plugins: [vue(),
+  // copy({
+  //   targets: [
+  //     { src: './public/WW_verify_9PkI9rwGg36Volpv.txt', dest: './WW_verify_9PkI9rwGg36Volpv.txt' }, //执行拷贝
+  //   ]
+  // })
+  ],
+  build: {
+    // terserOptions:{
+    //     compress:{
+    //         drop_console:true // 移除console 再生产环境
+    //     }
+    // },
+    // outDir:'public',
+    // assetsDir: "static",
+    rollupOptions: {
+      output: {
+        manualChunks(id) { // 分包
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
+    }
+  }
 })

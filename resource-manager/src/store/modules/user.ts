@@ -5,13 +5,17 @@ export interface userState {
   token: string,
   info: object,
   authorization: string
-  tokenInfo: any
+  tokenInfo: any,
+  tenantId: number,
+  userId: number
 }
 const state = (): userState => ({
   token: '', // 登录token
   info: {},  // 用户信息
   authorization: '',
-  tokenInfo: {}
+  tokenInfo: {},
+  tenantId: 3,
+  userId: 1
 })
 
 // getters
@@ -28,6 +32,8 @@ const mutations = {
     state.tokenInfo = token
     state.authorization = `${token['token_type']} ${token['access_token']}`
     state.token = token['access_token']
+    state.tenantId = token['tenantId']
+    state.userId = token['userId']
   },
   infoChange(state: userState, info: object) {
     state.info = info
@@ -41,9 +47,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       loginApi(params)
         .then(res => {
-          console.log(res);
           commit('tokenChange', res);
-          dispatch('getInfo', { content: res })
+          let p = { tenantId: res['tenantId'], userId: res['userId'] };
+          dispatch('getInfo', { content: p })
             .then(infoRes => {
               resolve(res)
             })
@@ -57,8 +63,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfoApi(params)
         .then(res => {
-          commit('infoChange', res.data.info)
-          resolve(res.data.info)
+          commit('infoChange', res.data)
+          resolve(res.data)
         })
     })
   },
