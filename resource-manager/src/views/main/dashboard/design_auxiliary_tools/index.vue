@@ -28,7 +28,7 @@
             <el-image :src="item.logo"></el-image>         
             <el-tooltip
                 effect="dark"
-                content="Top Left prompts info"
+                :content="item.desc"
                 placement="top-start"
             >
                 <a :href="item.url">{{ item.title }}</a>
