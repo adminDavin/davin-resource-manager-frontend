@@ -2,7 +2,7 @@ export default {
   system: {
     title: '后台管理系统',
     login: '账号登录',
-    wxLogin: "微信登录",
+    wxLogin: "企业微信登录",
     userName: '用户名',
     password: '密码',
     contentScreen: '内容全屏',

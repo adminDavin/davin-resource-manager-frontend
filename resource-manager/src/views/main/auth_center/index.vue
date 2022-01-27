@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="box">
+  <div class="container" style="text-align: center;background-image: linear-gradient(to top right, bisque, aliceblue);">
+    <div class="box" style="background-image: linear-gradient(-45deg, blueviolet, cornsilk);">
       <h1>{{ $t(systemTitle) }}</h1>
       <el-form class="form">
         <el-input
@@ -32,7 +32,6 @@
         </el-input>
         <el-button type="primary" :loading="form.loading" @click="submit" size="mini">{{ $t('message.system.login') }}</el-button>
         <el-button type="primary" :loading="form.loading" @click="wxGetAccessToken" size='mini'>{{ $t('message.system.wxLogin') }}</el-button>
-        <a :href="form.wxLoginUrl">davin</a>
       </el-form>
       <div class="fixed-top-right">
         <select-lang />
