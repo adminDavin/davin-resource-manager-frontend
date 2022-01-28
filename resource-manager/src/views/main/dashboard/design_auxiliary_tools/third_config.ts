@@ -70,7 +70,7 @@ const auxiliaryTools = {
       title: "道路断面绘制",
       logo: daoluduanmian,
       url: "https://streetmix.net/",
-      desc: "道路断面绘制神奇"
+      desc: "道路断面绘制神器"
     },
     {
       title: "AI图片放大",

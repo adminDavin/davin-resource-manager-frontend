@@ -55,11 +55,10 @@
         :key="item.title"
       >
         <el-card shadow="hover" class="au">
+          <el-link target="_blank" type="info" :underline="false" :href="item.url">
           <el-image :src="item.logo" style="height:40px;object-fit: inherit;"></el-image>
           <div>
-            <el-link  target="_blank" type="info" :underline="false" :href="item.url">{{
-              item.title
-            }}</el-link>
+            {{item.title}}
             <el-popover placement="top" :max-width="400">
               {{ item.desc }}
               <template #reference
@@ -74,6 +73,7 @@
               ></template>
             </el-popover>
           </div>
+          </el-link>
         </el-card>
       </el-col>
     </el-row>
