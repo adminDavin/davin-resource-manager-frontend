@@ -22,9 +22,10 @@ export default defineConfig({
         ws: false,
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, '')
-      },
+      }
     },
   },
+  
   plugins: [vue(),
   // copy({
   //   targets: [

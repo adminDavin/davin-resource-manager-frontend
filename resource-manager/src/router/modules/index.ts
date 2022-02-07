@@ -4,8 +4,9 @@ import { defineAsyncComponent } from 'vue';
 const route: Route[] = [
   {
     path: "/",
+    // redirect: '/r_davin',
     component: () => import(/* webpackChunkName: 'home' */ "@/views/main/index.vue"),
-    meta: { }
+    meta: {},
   },
   {
     path: "/dashboard",

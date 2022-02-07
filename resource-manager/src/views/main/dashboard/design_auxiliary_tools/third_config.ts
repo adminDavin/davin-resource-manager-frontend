@@ -1,7 +1,8 @@
-import tZeroItelligentDecision from '@/assets/aux_tools/t_zero/intelligent_decision.png';
-import tZeroParkingDesign from '@/assets/aux_tools/t_zero/parking_design.png';
-import tZeroCloudDesign from '@/assets/aux_tools/t_zero/cloud_design.png';
-import tZeroTotalGraph from '@/assets/aux_tools/t_zero/total_graph.png';
+import tZeroItelligentDecision from '@/assets/aux_tools/t_zero/智能地库设计LOGO.png';
+import tZeroParkingDesign from '@/assets/aux_tools/t_zero/智能投决系统LOGO.png';
+import tZeroCloudDesign from '@/assets/aux_tools/t_zero/智能设计平台LOGO.png';
+import tZeroTotalGraph from '@/assets/aux_tools/t_zero/智能总图设计LOGO.png';
+import tZeroEquipment from '@/assets/aux_tools/t_zero/智能设备用房.png';
 
 import t135 from '@/assets/aux_tools/third/T135.png';
 import ciyun from '@/assets/aux_tools/third/ciyun.png';
@@ -18,28 +19,35 @@ import zhitu from '@/assets/aux_tools/third/zhitu.png';
 
 const auxiliaryTools = {
   tZero: [{
-    title: "智能投决系统",
-    logo: tZeroItelligentDecision,
-    url: "http://www.to0-ai.com",
-    desc: "智能投决系统"
-  },
-  {
-    title: "地库排布优化",
+    title: "智能地库系统",
     logo: tZeroTotalGraph,
     url: "http://www.to0-ai.com",
-    desc: "地库排布优化"
-  },
-  {
-    title: "智能总图设计",
+    desc: "地库排布优化",
+    style: "background-color:rgb(128,152,166);"
+  }, {
+    title: "智能投决系统",
     logo: tZeroParkingDesign,
     url: "http://www.to0-ai.com",
-    desc: "智能总图设计"
-  },
-  {
-    title: "智能设计平台",
+    desc: "智能投决系统",
+    style: "background-color:rgb(128,166,144);"
+  }, {
+    title: "户型地图大数据",
     logo: tZeroCloudDesign,
     url: "http://www.to0-ai.com",
-    desc: "智能设计平台"
+    desc: "智能总图设计",
+    style: "background-color:rgb(68,196,197);"
+  }, {
+    title: "天友户型库",
+    logo: tZeroItelligentDecision,
+    url: "http://www.to0-ai.com",
+    desc: "智能设计平台",
+    style: "background-color:rgb(166,202,106);"
+  }, {
+    title: "设备用房计算器",
+    logo: tZeroEquipment,
+    url: "http://www.to0-ai.com",
+    desc: "智能设计平台",
+    style: "background-color:rgb(202,166,106);"
   }],
   third: [
     {

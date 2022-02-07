@@ -1,6 +1,6 @@
 <template>
   <el-card shadow="never">
-    <div :style="`font-size: var(--el-font-size-large)`">
+    <div style="font-size: var(--el-font-size-extra-large);">
       <strong>图零工具箱</strong>
     </div>
     <el-row :gutter="10">
@@ -13,28 +13,35 @@
         v-for="item in auxiliaryTools.tZero"
         :key="item.title"
       >
-        <el-card shadow="hover" class="au">
-          <el-image
-            :src="item.logo"
-            style="height: 100px; margin-top: 15px;object-fit: ;"
-          ></el-image>
-          <div style="margin-top: 15px">
-            <el-link target="_blank" type="info" :underline="false" :href="item.url">{{
-              item.title
-            }}</el-link>
-            <el-popover placement="top" :max-width="400">
-              {{ item.desc }}
-              <template #reference
-                ><el-icon
-                  ><eleme
-                    style="
-                      width: 1em;
-                      height: 0.7em;
-                      color: blue;
-                      background-color: lavenderblush;
-                    " /></el-icon
-              ></template>
-            </el-popover>
+        <el-card shadow="hover" class="au" :style="item.style">
+          <div :style="`padding-top: 15px;`">
+            <el-link
+              target="_blank"
+              type="info"
+              :underline="false"
+              :href="item.url"
+            >
+              <el-image
+                :src="item.logo"
+                style="height: 100px; margin-top: 15px; object-fit: contain"
+              ></el-image>
+              <div>
+                <strong :style="`font-size: var(--el-font-size-large);color: aliceblue;`">{{ item.title }}</strong>
+                <el-popover placement="top" :max-width="400">
+                  {{ item.desc }}
+                  <template #reference
+                    ><el-icon
+                      ><eleme
+                        style="
+                          width: 1em;
+                          height: 0.7em;
+                          color: blue;
+                          background-color: lavenderblush;
+                        " /></el-icon
+                  ></template>
+                </el-popover>
+              </div>
+            </el-link>
           </div>
         </el-card>
       </el-col>
@@ -55,24 +62,32 @@
         :key="item.title"
       >
         <el-card shadow="hover" class="au">
-          <el-link target="_blank" type="info" :underline="false" :href="item.url">
-          <el-image :src="item.logo" style="height:40px;object-fit: inherit;"></el-image>
-          <div>
-            {{item.title}}
-            <el-popover placement="top" :max-width="400">
-              {{ item.desc }}
-              <template #reference
-                ><el-icon
-                  ><eleme
-                    style="
-                      width: 1em;
-                      height: 0.7em;
-                      color: blue;
-                      background-color: lavenderblush;
-                    " /></el-icon
-              ></template>
-            </el-popover>
-          </div>
+          <el-link
+            target="_blank"
+            type="info"
+            :underline="false"
+            :href="item.url"
+          >
+            <el-image
+              :src="item.logo"
+              style="height: 40px; object-fit: inherit"
+            ></el-image>
+            <div>
+              {{ item.title }}
+              <el-popover placement="top" :max-width="400">
+                {{ item.desc }}
+                <template #reference
+                  ><el-icon
+                    ><eleme
+                      style="
+                        width: 1em;
+                        height: 0.7em;
+                        color: blue;
+                        background-color: lavenderblush;
+                      " /></el-icon
+                ></template>
+              </el-popover>
+            </div>
           </el-link>
         </el-card>
       </el-col>
