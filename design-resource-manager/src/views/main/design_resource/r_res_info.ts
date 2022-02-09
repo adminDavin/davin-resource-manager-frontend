@@ -100,7 +100,6 @@ export default {
       baseURL: baseUrl,
     })
       .then((res) => {
-        console.log(res);
         callback(res.data);
       });
   },

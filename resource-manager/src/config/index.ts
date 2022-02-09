@@ -10,10 +10,13 @@ const wxConf = {
   authorizedLoginUrl: "https://open.weixin.qq.com/connect/oauth2/authorize"
 };
 
+const dResCloud = "https://www.to0-ai.com/d_res";
+
 export {
   systemTitle,
   // wxCorpId,
   // wxSecret,
   // wxAccessTokenUrl,
+  dResCloud,
   wxConf
 }
