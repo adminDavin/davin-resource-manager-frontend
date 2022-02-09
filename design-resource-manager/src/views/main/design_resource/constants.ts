@@ -34,13 +34,6 @@ const resourceTypes = [
     index: '3'
   },
   {
-    label: "设计文件",
-    rTypes: ['CAD'],
-    key: 'design',
-    icon: 'alarm-clock',
-    index: '4'
-  },
-  {
     label: "音频文件",
     rTypes: ['VOICE'],
     key: 'voice',

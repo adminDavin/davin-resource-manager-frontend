@@ -14,9 +14,27 @@
       @click="enterDetail(resInfo, 'preview')"
       >预览</el-button
     >
-    <el-button type="text" size="small" @click="enterDetail(resInfo, 'rename')"
-      >重命名</el-button
-    >
+    <el-popover v-model:visible="visible" placement="bottom" :width="200">
+      <el-input
+        v-model="inputResInfoPath"
+        size="small"
+        placeholder="请输入目录名"
+      />
+      <div style="text-align: right; margin-top: 10px">
+        <el-button size="small" type="text" @click="visible = false"
+          >cancel</el-button
+        >
+        <el-button
+          size="small"
+          type="primary"
+          @click="inputResInfoConform(resInfo)"
+          >confirm</el-button
+        >
+      </div>
+      <template #reference>
+        <el-button type="text" size="small" @click="visible = true">重命名</el-button>
+      </template>
+    </el-popover>
     <!-- <el-button type="text" size="small" @click="enterDetail(resInfo, 'move')"
       >移动</el-button
     > -->
@@ -28,10 +46,9 @@
 <script lang="ts">
 import { defineComponent, inject, ref } from "vue";
 import rResInfo from "../r_res_info";
-import { useRouter, useRoute } from "vue-router";
-import { officeOnlineShow, previewUrl } from '@/config/index';
-import constants from '../constants';
-
+import { useRouter } from "vue-router";
+import { officeOnlineShow, previewUrl } from "@/config/index";
+import constants from "../constants";
 
 export default defineComponent({
   props: {
@@ -41,6 +58,14 @@ export default defineComponent({
     const router = useRouter();
     const refreshResInfos: any = inject("refreshResInfos");
     const changeSelectedInfo: any = inject("changeSelectedInfo");
+    const visible = ref(false);
+    const inputResInfoPath = ref();
+    const inputResInfoConform = (resInfo: any) => {
+      rResInfo.rename(resInfo.resInfoCode, inputResInfoPath.value, () => {
+        refreshResInfos();
+        visible.value = false;
+      });
+    };
 
     const enterDetail = (resInfo: any, action: string) => {
       if (action == "download") {
@@ -52,30 +77,31 @@ export default defineComponent({
       } else if (action == "delete") {
         rResInfo.delete(resInfo.resInfoCode, () => refreshResInfos());
       } else if (action == "preview") {
-        
-          if (constants.resourceTypes[3].rTypes.indexOf(resInfo.resContentType) > -1) {
-            let url = `${officeOnlineShow}${previewUrl}${resInfo.resInfoStore}`
-            window.open(url);
-          } else {
-
-            // alert(`${resInfo.resContentType}文件不支持预览`);
-            const { href } = router.resolve({
-              path: "/res_preview",
-              query: {
-                resInfoStore: resInfo.resInfoStore,
-                resInfoName: resInfo.resInfoName,
-                resInfoCode: resInfo.resInfoCode,
-                resContentType: resInfo.resContentType
-              },
-            });
-            window.open(href, "_blank");
-          }
-        
+        if (
+          constants.resourceTypes[3].rTypes.indexOf(resInfo.resContentType) > -1
+        ) {
+          let url = `${officeOnlineShow}${previewUrl}${resInfo.resInfoStore}`;
+          window.open(url);
+        } else {
+          const { href } = router.resolve({
+            path: "/res_preview",
+            query: {
+              resInfoStore: resInfo.resInfoStore,
+              resInfoName: resInfo.resInfoName,
+              resInfoCode: resInfo.resInfoCode,
+              resContentType: resInfo.resContentType,
+            },
+          });
+          window.open(href, "_blank");
+        }
       } else {
         changeSelectedInfo(resInfo, action);
       }
     };
     return {
+      visible,
+      inputResInfoPath,
+      inputResInfoConform,
       enterDetail,
     };
   },

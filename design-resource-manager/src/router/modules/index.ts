@@ -7,25 +7,23 @@ const route: Route[] = [
     redirect: '/design_resource',
     component: () => import(/* webpackChunkName: 'home' */ "@/views/main/index.vue"),
     meta: {},
+  },
+  {
+    path: "/design_resource",
+    redirect: '/design_resource/manage',
+    component: () => import(/* webpackChunkName: 'design_resource_index' */ "@/views/main/design_resource/index.vue"),
+    meta: {},
     children: [
       {
-        path: "/design_resource",
-        redirect: '/design_resource/manage',
-        component: () => import(/* webpackChunkName: 'design_resource_index' */ "@/views/main/design_resource/index.vue"),
-        meta: {},
-        children: [
-          {
-            path: "manage",
-            component: () => import(/* webpackChunkName: 'design_resource_manager' */ "@/views/main/design_resource/manager/index.vue"),
-            meta: { }
-          },
-          {
-            path: "search",
-            component: () => import(/* webpackChunkName: 'design_resource_search' */ "@/views/main/design_resource/search/index.vue"),
-            meta: { }
-          },
-        ]
-      }
+        path: "manage",
+        component: () => import(/* webpackChunkName: 'design_resource_manager' */ "@/views/main/design_resource/manager/index.vue"),
+        meta: { }
+      },
+      {
+        path: "search",
+        component: () => import(/* webpackChunkName: 'design_resource_search' */ "@/views/main/design_resource/search/index.vue"),
+        meta: { }
+      },
     ]
   },
   {

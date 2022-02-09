@@ -20,7 +20,6 @@ export default {
       baseURL: baseUrl,
     })
       .then((res) => {
-        console.log(res);
         rDavin.value = res.data;
       });
   },

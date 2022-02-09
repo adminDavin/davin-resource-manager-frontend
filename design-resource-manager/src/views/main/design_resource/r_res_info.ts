@@ -65,6 +65,24 @@ export default {
         rDavin.value = res.data;
       });
   },
+  getResInfoDataByParantCode: (resInfoCode: string, callback: Function) => {
+    let tenantId: any = sessionStorage.getItem('tenantId');
+    let userId: any = sessionStorage.getItem('userId');
+    console.log(tenantId);
+    request({ // 获取仓库信息
+      url: `/child?resTaskCode=${resInfoCode}`,
+      method: "post",
+      headers: {
+        tenantId: tenantId,
+        userId: userId
+      },
+      data: emptyContent,
+      baseURL: baseUrl,
+    })
+      .then((res) => {
+        callback(res.data);
+      });
+  },
   getSearchResInfos: (params: any, callback: Function) => {
     let tenantId: any = sessionStorage.getItem('tenantId');
     let userId: any = sessionStorage.getItem('userId');

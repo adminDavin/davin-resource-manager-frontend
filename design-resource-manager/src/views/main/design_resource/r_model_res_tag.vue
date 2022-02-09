@@ -1,21 +1,30 @@
 <template>
-  <text style="font-size: var(--el-font-size-base); font-weight: bolder"
-    >常用标签:
-  </text>
   <div style="display: flex">
-    <div v-for="item in resTags" :key="item.resTagCode" style="margin: 5px">
-      <el-tag type="success" @click="handleTagSeleted(item)">{{ item.resTagName }}</el-tag>
-    </div>
+    <text
+      style="
+        font-size: var(--el-font-size-base);
+        font-weight: bolder;
+        margin-top: 8px;
+      "
+      >常用标签:
+    </text>
+    <div style="display: flex">
+      <div v-for="item in resTags" :key="item.resTagCode" style="margin: 5px">
+        <el-tag type="success" @click="handleTagSeleted(item)">{{
+          item.resTagName
+        }}</el-tag>
+      </div>
 
-    <el-button
-      size="small"
-      type="primary"
-      style="margin-left: 10px; margin-top: 5px"
-      @click="actionManageResTag"
-      >标签管理</el-button
-    >
+      <el-button
+        size="small"
+        type="primary"
+        style="margin-left: 10px; margin-top: 5px"
+        @click="actionManageResTag"
+        >标签管理</el-button
+      >
+    </div>
   </div>
-  <el-drawer v-model="drawer" size="80%" :with-header="false">
+  <el-drawer v-model="drawer" size="50%" :with-header="false">
     <div style="font-size: var(--el-font-size-large); font-weight: bolder">
       资源标签管理
     </div>
@@ -71,7 +80,7 @@ import type { ElInput } from "element-plus";
 export default defineComponent({
   setup(props, context) {
     const { expose } = context;
-    const searchByRasTagCode: any = inject('searchByRasTagCode');
+    const searchByRasTagCode: any = inject("searchByRasTagCode");
     const drawer = ref(false);
     const resTags = ref([
       { resTagName: "", resTagCode: "", createdTime: undefined },
@@ -129,7 +138,7 @@ export default defineComponent({
       handleClose,
       handleInputConfirm,
       actionManageResTag,
-      handleTagSeleted
+      handleTagSeleted,
     };
   },
 });

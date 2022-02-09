@@ -1,61 +1,88 @@
 <template>
-  <el-container>
-    <el-aside width="130px">
-      <el-menu :default-active="resourceType" @select="handleActiveMenuAction">
-        <el-menu-item
-          :index="item.index"
-          v-for="item in resourceTypes"
-          :key="item.index"
+  <el-container horizontal>
+    <el-header
+      height="50px"
+      style="
+        position: absolute;
+        width: 100%;
+        background-color: azure;
+        z-index: 100;
+      "
+      ><r-d-res-header
+    /></el-header>
+    <el-container style="position: relative; margin-top: 50px">
+      <el-aside width="130px">
+        <el-menu
+          :default-active="resourceType"
+          @select="handleActiveMenuAction"
         >
-          <el-icon><component :is="item.icon"></component></el-icon>
-          <template #title>{{ item.label }}</template>
-        </el-menu-item>
-      </el-menu>
-    </el-aside>
-    <el-main>
-      <el-row style="margin-left: 10px">
-        <el-col :xs="22" :sm="5" :md="17" :lg="19">
-          <el-input
-            v-model="input"
-            placeholder="请输入搜索内容"
-            @keyup.enter="handleInputConfirm"
+          <el-menu-item
+            :index="item.index"
+            v-for="item in resourceTypes"
+            :key="item.index"
           >
-            <template #prepend>
-              <el-select v-model="select" style="width: 100px" size="small">
-                <el-option label="按资源名" value="1"></el-option>
-                <el-option label="按标签名" value="2"></el-option>
-              </el-select>
-            </template>
-            <template #append>
-              <el-button :icon="Search" @click="handleInputConfirm"></el-button>
-            </template>
-          </el-input>
-          <el-radio-group v-model="radio" @change="handleRadioChange">
-            <el-radio label="0" size="small">全部</el-radio>
-            <el-radio label="1" size="small">仅目录</el-radio>
-            <el-radio label="2" size="small">仅文件</el-radio>
-          </el-radio-group>
-        </el-col>
-      </el-row>
-      <div style="margin-top: 10px; margin-left: 10px">
-        <r-model-res-tag ref="childManageResTag"></r-model-res-tag>
-      </div>
-      <r-res-info-manager
-        v-show="selectResInfo"
-        ref="childManagerResInfo"
-      ></r-res-info-manager>
-      <div v-if="!selectResInfo">
+            <el-icon><component :is="item.icon"></component></el-icon>
+            <template #title>{{ item.label }}</template>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <el-main>
+        <el-row style="margin-left: 10px; margin-top: 10px">
+          <el-col :xs="22" :sm="5" :md="14" :lg="12">
+            <el-input
+              v-model="input"
+              placeholder="请输入搜索内容"
+              @keyup.enter="handleInputConfirm"
+            >
+              <template #prepend>
+                <el-select v-model="select" style="width: 100px" size="small">
+                  <el-option label="按资源名" value="1"></el-option>
+                  <el-option label="按标签名" value="2"></el-option>
+                </el-select>
+              </template>
+              <template #append>
+                <el-button
+                  :icon="Search"
+                  @click="handleInputConfirm"
+                ></el-button>
+              </template>
+            </el-input>
+            <el-radio-group v-model="radio" @change="handleRadioChange">
+              <el-radio label="0" size="small">全部</el-radio>
+              <el-radio label="1" size="small">仅目录</el-radio>
+              <el-radio label="2" size="small">仅文件</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-row>
         <div style="margin-top: 10px; margin-left: 10px">
-          <el-button @click="handleToRootResInfo" size="small">返回至根路径</el-button>
+          <r-model-res-tag ref="childManageResTag"></r-model-res-tag>
         </div>
-        <r-res-info-search ref="childSearchResInfo"></r-res-info-search>
-      </div>
-    </el-main>
+        <r-res-info-manager
+          v-show="selectResInfo"
+          ref="childManagerResInfo"
+        ></r-res-info-manager>
+        <div v-show="!selectResInfo">
+          <div style="margin: 10px">
+            <el-button @click="handleToRootResInfo" size="small"
+              >返回至根路径</el-button
+            >
+          </div>
+          <r-res-info-search ref="childSearchResInfo"></r-res-info-search>
+        </div>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, provide, Ref, ref } from "vue";
-import { useStore } from 'vuex';
+import {
+  defineComponent,
+  onBeforeMount,
+  onMounted,
+  provide,
+  Ref,
+  ref,
+} from "vue";
+import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { Search } from "@element-plus/icons-vue";
 import RModelResTag from "./r_model_res_tag.vue";
@@ -63,12 +90,14 @@ import RResInfoSearch from "./search/index.vue";
 import RResInfoMananger from "./manager/index.vue";
 import constants from "./constants";
 import rResInfo from "./r_res_info";
+import RDResHeader from "./header.vue";
 
 export default defineComponent({
   components: {
     "r-model-res-tag": RModelResTag,
     "r-res-info-search": RResInfoSearch,
     "r-res-info-manager": RResInfoMananger,
+    "r-d-res-header": RDResHeader,
   },
   setup() {
     const store = useStore();
@@ -136,12 +165,15 @@ export default defineComponent({
         childManagerResInfo.value.initOnMount(res.resInfoCode);
       });
     };
-    onMounted(() => {
+    onBeforeMount(() => {
       if (!store.state.user.info.userId) {
-        router.push({ path: '/login' });
+        router.push({ path: "/login" });
       }
-      sessionStorage.setItem('tenantId', store.state.user.info.tenantId);
-      sessionStorage.setItem('userId', store.state.user.info.userId);
+      sessionStorage.setItem("tenantId", store.state.user.info.tenantId);
+      sessionStorage.setItem("userId", store.state.user.info.userId);
+    });
+
+    onMounted(() => {
       rResInfo.getRootResInfo(selectResInfo, (res) => {
         childManagerResInfo.value.initOnMount(res.resInfoCode);
       });
@@ -159,10 +191,14 @@ export default defineComponent({
       console.log(filters);
       refreshSearchData(filters);
     });
+
+    provide("refreshResInfos", () => refreshSearchData(initSearchData()));
+
     provide("changeSelectedInfo", (resInfo: any, action: string) => {
       selectResInfo.value = resInfo;
       childManagerResInfo.value.initOnMount(resInfo.resInfoCode);
     });
+
 
     return {
       Search,
