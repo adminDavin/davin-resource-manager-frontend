@@ -27,19 +27,6 @@
               ></el-image>
               <div>
                 <strong :style="`font-size: var(--el-font-size-large);color: aliceblue;`">{{ item.title }}</strong>
-                <el-popover placement="top" :max-width="400">
-                  {{ item.desc }}
-                  <template #reference
-                    ><el-icon
-                      ><eleme
-                        style="
-                          width: 1em;
-                          height: 0.7em;
-                          color: blue;
-                          background-color: lavenderblush;
-                        " /></el-icon
-                  ></template>
-                </el-popover>
               </div>
             </el-link>
           </div>

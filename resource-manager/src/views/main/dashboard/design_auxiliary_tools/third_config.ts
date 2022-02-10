@@ -21,31 +21,31 @@ const auxiliaryTools = {
   tZero: [{
     title: "智能地库系统",
     logo: tZeroTotalGraph,
-    url: "http://www.to0-ai.com",
+    url: "https://www.to0-ai.com",
     desc: "地库排布优化",
     style: "background-color:rgb(128,152,166);"
   }, {
     title: "智能投决系统",
     logo: tZeroParkingDesign,
-    url: "http://www.to0-ai.com",
+    url: "https://www.to0-ai.com",
     desc: "智能投决系统",
     style: "background-color:rgb(128,166,144);"
   }, {
     title: "户型地图大数据",
     logo: tZeroCloudDesign,
-    url: "http://www.to0-ai.com",
+    url: "http://yanfa.tenio.com:1777/tenio/index.html",
     desc: "智能总图设计",
     style: "background-color:rgb(68,196,197);"
   }, {
     title: "天友户型库",
     logo: tZeroItelligentDecision,
-    url: "http://www.to0-ai.com",
+    url: "http://yanfa.tenio.com:2020/webApp/build/html/login.html",
     desc: "智能设计平台",
     style: "background-color:rgb(166,202,106);"
   }, {
     title: "设备用房计算器",
     logo: tZeroEquipment,
-    url: "http://www.to0-ai.com",
+    url: "https://www.to0-ai.com",
     desc: "智能设计平台",
     style: "background-color:rgb(202,166,106);"
   }],

@@ -1,7 +1,7 @@
 <template>
   <div style="width: 99%;height: 99%; padding-left: 10px;">
     <div style="display: flex; margin-top: 0.6rem; margin-left: 0.6rem">
-      <el-avatar size="default" :src="userinfo.userDesc['avatar']"></el-avatar>
+      <el-avatar size="default" :src="userinfo.userDesc['avatar']" @click="loginout"></el-avatar>
       <div style="margin-top: 0.6rem; margin-left: 0.6rem">
         <strong :style="`font-size: var(--el-font-size-extra-large)`">
           {{ userinfo.nickName }}, 欢迎您
@@ -42,7 +42,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute, RouteLocationRaw } from "vue-router";
+import c_alert from '@/utils/alert_utils';
 
 export default defineComponent({
   setup() {
@@ -58,7 +59,17 @@ export default defineComponent({
     const handleClick = (tab: any, event: Event) =>
       router.push({ path: tab.paneName });
 
+    const loginout = () => {
+      console.log(store);
+      store.dispatch('user/loginOut', {})
+        .then(async () => {
+          c_alert.c_alert_s('登录成功', 'success', true, 1000);
+          await router.push(route.query.redirect as RouteLocationRaw || '/login');
+        })
+    };
+
     return {
+      loginout,
       userinfo,
       activeName,
       handleClick,

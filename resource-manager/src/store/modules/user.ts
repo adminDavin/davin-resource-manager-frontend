@@ -33,7 +33,9 @@ const mutations = {
     state.authorization = `${token['token_type']} ${token['access_token']}`
     state.token = token['access_token']
     state.tenantId = token['tenantId']
-    state.userId = token['userId']
+    state.userId = token['userId'];
+    sessionStorage.setItem('tenantId', token['tenantId']);
+    sessionStorage.setItem('userId', token['userId']);
   },
   infoChange(state: userState, info: object) {
     state.info = info
@@ -48,6 +50,8 @@ const actions = {
       loginApi(params)
         .then(res => {
           commit('tokenChange', res);
+          sessionStorage.setItem('tenantId', res['tenantId']);
+          sessionStorage.setItem('userId', res['userId']);
           let p = { tenantId: res['tenantId'], userId: res['userId'] };
           dispatch('getInfo', { content: p })
             .then(infoRes => {
