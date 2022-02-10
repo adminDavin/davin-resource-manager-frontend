@@ -62,11 +62,6 @@
           ref="childManagerResInfo"
         ></r-res-info-manager>
         <div v-show="!selectResInfo">
-          <div style="margin: 10px">
-            <el-button @click="handleToRootResInfo" size="small"
-              >返回至根路径</el-button
-            >
-          </div>
           <r-res-info-search ref="childSearchResInfo"></r-res-info-search>
         </div>
       </el-main>
@@ -160,11 +155,6 @@ export default defineComponent({
       params["resTagCodes"] = [];
       childSearchResInfo.value?.refreshSearchResInfo(params);
     };
-    const handleToRootResInfo = () => {
-      rResInfo.getRootResInfo(selectResInfo, (res) => {
-        childManagerResInfo.value.initOnMount(res.resInfoCode);
-      });
-    };
     onBeforeMount(() => {
       if (!store.state.user.info.userId) {
         router.push({ path: "/login" });
@@ -174,7 +164,12 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      rResInfo.getRootResInfo(selectResInfo, (res) => {
+      rResInfo.getRootResInfo(selectResInfo, (res: any) => {
+        childManagerResInfo.value.initOnMount(res.resInfoCode);
+      });
+    });
+    provide("handleToRootResInfo", () => {
+      rResInfo.getRootResInfo(selectResInfo, (res: any) => {
         childManagerResInfo.value.initOnMount(res.resInfoCode);
       });
     });
@@ -199,7 +194,6 @@ export default defineComponent({
       childManagerResInfo.value.initOnMount(resInfo.resInfoCode);
     });
 
-
     return {
       Search,
       resourceType,
@@ -208,7 +202,6 @@ export default defineComponent({
       input,
       radio,
       selectResInfo,
-      handleToRootResInfo,
       handleInputConfirm,
       childManageResTag,
       childSearchResInfo,

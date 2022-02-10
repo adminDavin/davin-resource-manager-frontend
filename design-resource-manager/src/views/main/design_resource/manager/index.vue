@@ -1,5 +1,5 @@
 <template>
-  <el-card body-style="padding: 0px;margin-left: 10px;">
+  <el-card body-style="padding: 10px;margin-left: 10px;margin-right: 10px;">
     <div
       style="margin-top: 10px; display: flex; width: 100%"
       v-if="selectedResInfo"
@@ -26,7 +26,7 @@
             >
           </div>
           <template #reference>
-            <el-button @click="visible = true" size="small">新建目录</el-button>
+            <el-button @click="visible = true" size="small">新建文件夹</el-button>
           </template>
         </el-popover>
       </div>

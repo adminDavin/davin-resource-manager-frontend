@@ -8,21 +8,23 @@
       "
       >常用标签:
     </text>
-    <div style="display: flex">
-      <div v-for="item in resTags" :key="item.resTagCode" style="margin: 5px">
-        <el-tag type="success" @click="handleTagSeleted(item)">{{
-          item.resTagName
-        }}</el-tag>
-      </div>
-
-      <el-button
-        size="small"
-        type="primary"
-        style="margin-left: 10px; margin-top: 5px"
-        @click="actionManageResTag"
-        >标签管理</el-button
+    <div style="width: 70%">
+      <el-tag
+        v-for="item in resTags"
+        :key="item.resTagCode"
+        style="margin: 5px"
+        type="success"
+        @click="handleTagSeleted(item)"
+        >{{ item.resTagName }}</el-tag
       >
     </div>
+    <el-button
+      size="small"
+      type="primary"
+      style="margin-left: 10px; margin-top: 5px"
+      @click="actionManageResTag"
+      >标签管理</el-button
+    >
   </div>
   <el-drawer v-model="drawer" size="50%" :with-header="false">
     <div style="font-size: var(--el-font-size-large); font-weight: bolder">

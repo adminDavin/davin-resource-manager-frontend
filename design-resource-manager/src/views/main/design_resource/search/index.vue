@@ -1,5 +1,5 @@
 <template>
-  <el-card body-style="padding: 0px;margin-left: 10px;">
+  <el-card body-style="padding: 10px;margin-left: 10px;margin-right: 10px;">
     <div style="display: flex">
       <r-show-res-info-data ref="childShowResInfoData"></r-show-res-info-data>
       <div style="width: 40%" v-if="selectedResInfo">
@@ -116,5 +116,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -18,7 +18,7 @@
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
           上传至目标路径: <el-link>{{ pickedResInfo.resInfoName }}</el-link>
         </div>
-        <el-upload
+        <!-- <el-upload
           drag
           action=""
           :http-request="submitUpload"
@@ -34,7 +34,19 @@
               支持小于2M的文件
             </div>
           </template>
-        </el-upload>
+        </el-upload> -->
+
+        <uploader :options="options" class="uploader-example">
+          <uploader-unsupport></uploader-unsupport>
+          <uploader-drop>
+            <p>Drop files here to upload or</p>
+            <uploader-btn>select files</uploader-btn>
+            <uploader-btn>select images</uploader-btn>
+            <uploader-btn :directory="true">select folder</uploader-btn>
+          </uploader-drop>
+          <uploader-list></uploader-list>
+        </uploader>
+
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
           任务列表
         </div>
@@ -82,8 +94,13 @@
 import { defineComponent, inject, onMounted, ref } from "vue";
 import rResTask from "../r_res_task";
 import { useStore } from "vuex";
+import bUtils from "@/utils/browser_utils";
+import uploader from "vue-simple-uploader";
 
 export default defineComponent({
+  components: {
+    uploader: uploader,
+  },
   setup(props, context) {
     const store = useStore();
     const { expose } = context;
@@ -107,11 +124,20 @@ export default defineComponent({
       console.log(resTaskCode.value);
       if (resTaskCode.value) {
         let file: File = upload.file;
-
+        var totalsize = file.size; //总大小
+        if (totalsize > 1024 * 1024) {
+          var tosize =
+            (Math.round((totalsize * 100) / (1024 * 1024)) / 100).toString() +
+            "M";
+        } else {
+          var tosize =
+            (Math.round((totalsize * 100) / 1024) / 100).toString() + "KB";
+        }
+        var rndstr = bUtils.randomString(16);
         rResTask.uploadRes(resTaskCode.value, file, () => {
           rResTask.getResTasks(resTasks);
           refreshResInfos();
-        }); 
+        });
       }
     };
     const beforeUpload = (file: File) => {
@@ -138,6 +164,13 @@ export default defineComponent({
       importAction,
       submitUpload,
       beforeUpload,
+      options: {
+        target: "http://xxxxx/xx",
+        chunkSize: "2048000", //分块大小
+        fileParameterName: "file", //上传文件时文件的参数名，默认file
+        maxChunkRetries: 3, //最大自动失败重试上传次数
+        testChunks: true, //是否开启服务器分片校验
+      },
     };
   },
 });
@@ -149,5 +182,22 @@ export default defineComponent({
 .el-divider--horizontal {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.uploader-example {
+  width: 880px;
+  padding: 15px;
+  margin: 40px auto 0;
+  font-size: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+.uploader-example .uploader-btn {
+  margin-right: 4px;
+}
+.uploader-example .uploader-list {
+  max-height: 440px;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>
