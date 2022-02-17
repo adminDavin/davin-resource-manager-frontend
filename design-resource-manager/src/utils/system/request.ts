@@ -28,7 +28,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const res = response.data;
-    if (res.type && res.type == 'application/octet-stream') { 
+    if (res instanceof Blob) { 
       return response;
     }
     if (res.status === 200 || res.access_token != undefined) {

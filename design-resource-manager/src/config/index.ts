@@ -10,7 +10,7 @@ const wxConf = {
 };
 
 const officeOnlineShow = 'https://view.officeapps.live.com/op/view.aspx?src=';
-const previewUrl = 'https://to0-ai.com/api/res_m/res_info/preview?resInfoStore=';
+const previewUrl = 'https://to0-ai.com/api/res_m/res_info/preview';
 
 export {
   systemTitle,

@@ -13,7 +13,7 @@ export default defineComponent({
     onMounted(() => {
       resInfo.value = route.query;
       console.log(resInfo.value.resContentType);
-      filePreviewUrl.value = "/pdfjs-2.12.313-dist/web/viewer.html?file=/api/res_m/res_info/preview?resInfoStore=" + resInfo.value.resInfoStore;
+      filePreviewUrl.value = "/pdfjs-2.12.313-dist/web/viewer.html?file=/api/res_m/res_info/preview?resInfoCode=" + resInfo.value.resInfoCode;
     });
     return {
       resInfo,

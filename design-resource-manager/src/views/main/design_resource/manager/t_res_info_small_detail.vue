@@ -73,6 +73,7 @@ export default defineComponent({
     const inputVisible = ref(false);
     const resTagDefs = ref([{ resTagName: "", resTagCode: "" }]);
     const resTags = ref([{ resTagName: "", resTagCode: "" }]);
+    const downloadProcess = ref(0);
 
     const InputRefD = ref<InstanceType<typeof ElInput>>();
 
@@ -84,7 +85,7 @@ export default defineComponent({
         if (resInfo.resInfoType == "folder") {
           changeSelectedInfo(resInfo, "enter");
         } else {
-          rResInfo.downloadResInfo(resInfo.resInfoStore, resInfo.resInfoName);
+          rResInfo.downloadMultiResInfo(resInfo.resInfoCode, resInfo.resInfoSize, resInfo.resInfoName, downloadProcess);
         }
       } else if (action == "delete") {
         rResInfo.delete(resInfo.resInfoCode, () => refreshResInfos());

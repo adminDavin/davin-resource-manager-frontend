@@ -17,7 +17,8 @@ export default defineConfig({
   server: {
     proxy: { // 代理配置
       '/api': {
-        target: "https://to0-ai.com",
+        // target: "http://localhost:11205",
+        target: "https://www.to0-ai.com",
         ws: false,
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, '')

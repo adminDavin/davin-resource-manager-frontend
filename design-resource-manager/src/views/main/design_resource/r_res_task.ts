@@ -23,7 +23,7 @@ export default {
         rDavin.value = res.data;
       });
   },
-  createResTasks: (rDavin: any, resTaskCode: any) => {
+  createResTasks: (rDavin: any, callBack: Function) => {
     let tenantId: any = sessionStorage.getItem('tenantId');
     let userId: any = sessionStorage.getItem('userId');
     return request({ // 获取仓库信息
@@ -39,22 +39,41 @@ export default {
       baseURL: baseUrl,
     })
       .then((res) => {
-        resTaskCode.value = res.data.resTaskCode
+        callBack(res.data);
       });
   },
-  uploadRes: (resTaskCode: string, file: File, callback: Function) => {
+  uploadRes: (resTaskCode: string, file: any, partNumber: number, callback: Function) => {
     let tenantId: any = sessionStorage.getItem('tenantId');
     let userId: any = sessionStorage.getItem('userId');
     var formData = new FormData();
     formData.append("file", file);
     request({ // 获取仓库信息
-      url: `/res_task/upload?resInfoCode=${resTaskCode}`,
+      url: `/res_task/upload?resInfoCode=${resTaskCode}&partNumber=${partNumber}`,
       method: "post",
       headers: {
         tenantId: tenantId,
         userId: userId
       },
       timeout: 120000,
+      data: formData,
+      baseURL: baseUrl,
+    }).then((res: any) => { 
+        callback(res);
+    });
+  },
+  uploadResPart: (resTaskCode: string, file: any, partNumber: number, callback: Function) => {
+    let tenantId: any = sessionStorage.getItem('tenantId');
+    let userId: any = sessionStorage.getItem('userId');
+    var formData = new FormData();
+    formData.append("file", file);
+    request({ // 获取仓库信息
+      url: `/res_task/upload?resInfoCode=${resTaskCode}&partNumber=${partNumber}`,
+      method: "post",
+      headers: {
+        tenantId: tenantId,
+        userId: userId
+      },
+      timeout: 240000,
       data: formData,
       baseURL: baseUrl,
     }).then((res: any) => { 

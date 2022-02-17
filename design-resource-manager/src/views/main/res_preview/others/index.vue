@@ -1,37 +1,37 @@
 <template>
-  <div
-    style="
-      font-size: var(--el-font-size-large);
-      font-weight: bolder;
-      text-align: center;
-      margin-top: 50px;
-    "
-    v-if="resInfo"
-  >
-    <three-js-demo></three-js-demo>
-    <div>文件: {{ resInfo.resInfoName }}的格式: {{ resInfo.resContentType }} </div>
-    该文件格式{{ resInfo.resContentType }}暂不支持预览，研发正在努力更新中
-  </div>
+  <div ref="graph"></div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import TreeJsDemo from './threejs_demo.vue';
+import ForceGraph3D from "3d-force-graph";
 
 export default defineComponent({
-  components: {
-    'three-js-demo': TreeJsDemo
-  },
   setup() {
     const router = useRouter();
     const route = useRoute();
     const resInfo = ref();
+    const graph = ref();
+    const n = ref(30);
+    const N = 300;
+    const gData = {
+      nodes: [...Array(N).keys()].map((i) => ({ id: i })),
+      links: [...Array(N).keys()]
+        .filter((id) => id)
+        .map((id) => ({
+          source: id,
+          target: Math.round(Math.random() * (id - 1)),
+        })),
+    };
     onMounted(() => {
-      resInfo.value = route.query;
-      console.log(resInfo.value.resContentType);
+      ForceGraph3D({
+        controlType: "trackball",
+        rendererConfig: { antialias: true, alpha: true },
+      })(graph.value).graphData(gData);
+      
     });
     return {
-      resInfo,
+      graph,
     };
   },
 });

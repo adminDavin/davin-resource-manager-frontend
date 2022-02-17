@@ -54,7 +54,8 @@ export default defineComponent({
   props: {
     resInfo: Object,
   },
-  setup() {
+  setup(props, context) {
+    const { expose } = context;
     const router = useRouter();
     const refreshResInfos: any = inject("refreshResInfos");
     const changeSelectedInfo: any = inject("changeSelectedInfo");
@@ -72,7 +73,7 @@ export default defineComponent({
         if (resInfo.resInfoType == "folder") {
           changeSelectedInfo(resInfo, "enter");
         } else {
-          rResInfo.downloadResInfo(resInfo.resInfoStore, resInfo.resInfoName);
+          rResInfo.downloadResInfo(resInfo.resInfoCode, resInfo.resInfoName);
         }
       } else if (action == "delete") {
         rResInfo.delete(resInfo.resInfoCode, () => refreshResInfos());
@@ -80,7 +81,7 @@ export default defineComponent({
         if (
           constants.resourceTypes[3].rTypes.indexOf(resInfo.resContentType) > -1
         ) {
-          let url = `${officeOnlineShow}${previewUrl}${resInfo.resInfoStore}`;
+          let url = `${officeOnlineShow}${previewUrl}?resInfoCode=${resInfo.resInfoCode}`;
           window.open(url);
         } else {
           const { href } = router.resolve({
@@ -98,6 +99,7 @@ export default defineComponent({
         changeSelectedInfo(resInfo, action);
       }
     };
+    expose({enterDetail});
     return {
       visible,
       inputResInfoPath,

@@ -1,27 +1,27 @@
 const resourceTypes = [
   {
-    label: "所有类型",
+    label: "最近",
     rTypes: [],
     icon: 'suitcase',
-    key: '',
+    key: 'recent',
     index: '0'
   },
   {
-    label: "图片文件",
+    label: "图片",
     rTypes: ['image/png', 'JPG', 'image/jpeg', 'BMP', 'GIF'],
     icon: 'add-location',
     key: 'image',
     index: '1'
   },
   {
-    label: "普通文本",
-    rTypes: ['text/plain', 'text/html'],
+    label: "文本",
+    rTypes: ['text/plain', 'text/html', 'application/json'],
     icon: 'add-location',
     key: 'text',
     index: '2'
   },
   {
-    label: "办公文件",
+    label: "文档",
     rTypes: [
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/msword',
@@ -34,40 +34,18 @@ const resourceTypes = [
     index: '3'
   },
   {
-    label: "音频文件",
+    label: "视频",
     rTypes: ['VOICE'],
     key: 'voice',
     icon: 'apple',
     index: '5'
   },
   {
-    label: "视频文件",
-    rTypes: ['VIDIO'],
-    key: 'vidio',
-    icon: 'baseball',
-    index: '6'
-  },
-  {
-    label: "压缩文件",
-    rTypes: ['application/x-gzip'],
-    key: 'zip',
-    icon: 'baseball',
-    index: '7'
-  },
-  
-  {
-    label: "未知类型",
-    rTypes: ['OTHER'],
+    label: "其他",
+    rTypes: ['application/octet-stream'],
     key: 'others',
     icon: 'bowl',
     index: '8'
-  },
-  {
-    label: "pdf文档",
-    rTypes: ['application/pdf'],
-    icon: 'add-location',
-    key: 'pdf',
-    index: '9'
   },
 ];
 const getResourceType = (resContentType: string) => { 

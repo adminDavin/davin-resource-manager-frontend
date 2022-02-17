@@ -11,24 +11,34 @@
       ><r-d-res-header
     /></el-header>
     <el-container style="position: relative; margin-top: 50px">
-      <el-aside width="130px">
+      <el-aside>
         <el-menu
+          style="width: min-content"
           :default-active="resourceType"
           @select="handleActiveMenuAction"
+          default-openeds="-1"
+          width="200px"
         >
-          <el-menu-item
-            :index="item.index"
-            v-for="item in resourceTypes"
-            :key="item.index"
-          >
-            <el-icon><component :is="item.icon"></component></el-icon>
-            <template #title>{{ item.label }}</template>
-          </el-menu-item>
+          <el-sub-menu :index="-1">
+            <template #title>
+              <span>我的文件</span>
+            </template>
+
+            <el-menu-item
+              :index="item.index"
+              v-for="item in resourceTypes"
+              :key="item.index"
+              style="padding-left: 25px"
+            >
+              <el-icon><component :is="item.icon"></component></el-icon>
+              <template #title>{{ item.label }}</template>
+            </el-menu-item>
+          </el-sub-menu>
         </el-menu>
       </el-aside>
       <el-main>
         <el-row style="margin-left: 10px; margin-top: 10px">
-          <el-col :xs="22" :sm="5" :md="14" :lg="12">
+          <el-col :xs="22" :sm="5" :md="14" :lg="12" :offset="2">
             <el-input
               v-model="input"
               placeholder="请输入搜索内容"
@@ -97,7 +107,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
-    const resourceType = ref("0");
+    const resourceType = ref("-1");
     const resourceTypes = constants.resourceTypes;
     const input = ref("");
     const select = ref("1");
@@ -117,10 +127,18 @@ export default defineComponent({
     };
 
     const handleActiveMenuAction = (index: any) => {
-      resourceType.value = index;
-      let filters = initSearchData();
-      filters.resContentType = index;
-      refreshSearchData(filters);
+      if (index == 0) {
+        selectResInfo.value = null;
+        childSearchResInfo.value?.refreshRecentResInfo({
+          ownerType: "MINE",
+          limit: 4,
+        });
+      } else {
+        resourceType.value = index;
+        let filters = initSearchData();
+        filters.resContentType = index;
+        refreshSearchData(filters);
+      }
     };
 
     const handleRadioChange = (val: any) => {
@@ -183,7 +201,6 @@ export default defineComponent({
         selectedTag.value.push(resTagCode);
       }
       let filters = initSearchData();
-      console.log(filters);
       refreshSearchData(filters);
     });
 
@@ -212,3 +229,11 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+.el-sub-menu .el-menu-item {
+  min-width: 100px;
+}
+.el-aside {
+  --el-aside-width: 128px;
+}
+</style>

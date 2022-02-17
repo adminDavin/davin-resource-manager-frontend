@@ -18,7 +18,7 @@
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
           上传至目标路径: <el-link>{{ pickedResInfo.resInfoName }}</el-link>
         </div>
-        <!-- <el-upload
+        <el-upload
           drag
           action=""
           :http-request="submitUpload"
@@ -29,24 +29,11 @@
           <div class="el-upload__text">
             将文件拖动到此处 or <em>点击上传文件</em>
           </div>
-          <template #tip>
-            <div class="el-upload__tip" style="color: red">
-              支持小于2M的文件
-            </div>
-          </template>
-        </el-upload> -->
-
-        <uploader :options="options" class="uploader-example">
-          <uploader-unsupport></uploader-unsupport>
-          <uploader-drop>
-            <p>Drop files here to upload or</p>
-            <uploader-btn>select files</uploader-btn>
-            <uploader-btn>select images</uploader-btn>
-            <uploader-btn :directory="true">select folder</uploader-btn>
-          </uploader-drop>
-          <uploader-list></uploader-list>
-        </uploader>
-
+        </el-upload>
+        <el-progress
+          :percentage="resInfoStatus"
+          v-if="resInfoStatus !== 0"
+        ></el-progress>
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
           任务列表
         </div>
@@ -95,21 +82,24 @@ import { defineComponent, inject, onMounted, ref } from "vue";
 import rResTask from "../r_res_task";
 import { useStore } from "vuex";
 import bUtils from "@/utils/browser_utils";
-import uploader from "vue-simple-uploader";
+import SparkMD5 from "spark-md5";
 
 export default defineComponent({
-  components: {
-    uploader: uploader,
-  },
+  components: {},
   setup(props, context) {
     const store = useStore();
     const { expose } = context;
     const drawer = ref(false);
     const uploadFile = ref();
     const resTaskCode = ref();
+    const partCount = ref();
+    const resInfoStatus = ref(0);
+    
+    const isNeedPartUpload = ref(false);
     const pickedResInfo = ref({
       resInfoCode: "",
       resInfoName: "",
+      resInfoStatus: 90,
     });
     const refreshResInfos: any = inject("refreshResInfos");
     const resTasks = ref();
@@ -121,31 +111,69 @@ export default defineComponent({
       rResTask.getResTasks(resTasks);
     };
     const submitUpload = (upload: any) => {
-      console.log(resTaskCode.value);
-      if (resTaskCode.value) {
-        let file: File = upload.file;
-        var totalsize = file.size; //总大小
-        if (totalsize > 1024 * 1024) {
-          var tosize =
-            (Math.round((totalsize * 100) / (1024 * 1024)) / 100).toString() +
-            "M";
-        } else {
-          var tosize =
-            (Math.round((totalsize * 100) / 1024) / 100).toString() + "KB";
-        }
-        var rndstr = bUtils.randomString(16);
-        rResTask.uploadRes(resTaskCode.value, file, () => {
+      let file: File = upload.file;
+      let dataFile = file;
+
+      if (isNeedPartUpload.value) {
+        // 不用分片上传
+        rResTask.uploadRes(resTaskCode.value, file, 0, (res: any) => {
           rResTask.getResTasks(resTasks);
           refreshResInfos();
         });
+      } else {
+        let spark = new SparkMD5();
+        let fileReader = new FileReader();
+        if (dataFile.size > 1024 * 1024 * 5) {
+          let data1 = dataFile.slice(0, 1024 * 1024 * 5);
+          fileReader.readAsBinaryString(data1);
+        } else {
+          fileReader.readAsBinaryString(dataFile);
+        }
+        fileReader.onload = function (e: any) {
+          spark.appendBinary(e.target.result);
+          let md5 = spark.end();
+          uploadPart(file, 0, md5);
+        };
       }
     };
+    const uploadPart = (file: File, num: number, md5: any) => {
+      let bytesPerPiece = 5 * 1024 * 1024;
+      let start = num * bytesPerPiece;
+      let end = start + bytesPerPiece;
+      if (start >= file.size) return;
+      if (end > file.size) {
+        end = file.size;
+      }
+      rResTask.uploadRes(
+        resTaskCode.value,
+        file.slice(start, end),
+        num + 1,
+        (res: any) => {
+          rResTask.getResTasks(resTasks);
+          let task = res.data;
+          resInfoStatus.value = Math.ceil(task.resTaskStatus/task.partCount * 100);
+          uploadPart(file, ++num, md5);
+          refreshResInfos();
+          rResTask.getResTasks(resTasks);
+        }
+      );
+    };
     const beforeUpload = (file: File) => {
+      // 计算总片数
+      let bytesPerPiece = 5 * 1024 * 1024; // 每个文件切片大小定为50MB
+      partCount.value = Math.ceil(file.size / bytesPerPiece); // 总片数
       return rResTask.createResTasks(
         {
           resInfoParentCode: pickedResInfo.value.resInfoCode,
+          filename: file.name,
+          partCount: partCount.value,
+          fileSize: file.size,
+          contentType: "application/octet-stream",
         },
-        resTaskCode
+        (res: any) => {
+          resTaskCode.value = res.resTask.resTaskCode;
+          isNeedPartUpload.value = res.partUploadId == null;
+        }
       );
     };
 
@@ -159,18 +187,12 @@ export default defineComponent({
     });
     return {
       drawer,
+      resInfoStatus,
       pickedResInfo,
       resTasks,
       importAction,
       submitUpload,
       beforeUpload,
-      options: {
-        target: "http://xxxxx/xx",
-        chunkSize: "2048000", //分块大小
-        fileParameterName: "file", //上传文件时文件的参数名，默认file
-        maxChunkRetries: 3, //最大自动失败重试上传次数
-        testChunks: true, //是否开启服务器分片校验
-      },
     };
   },
 });
@@ -182,22 +204,5 @@ export default defineComponent({
 .el-divider--horizontal {
   margin-top: 5px;
   margin-bottom: 5px;
-}
-
-.uploader-example {
-  width: 880px;
-  padding: 15px;
-  margin: 40px auto 0;
-  font-size: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-.uploader-example .uploader-btn {
-  margin-right: 4px;
-}
-.uploader-example .uploader-list {
-  max-height: 440px;
-  overflow: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 </style>

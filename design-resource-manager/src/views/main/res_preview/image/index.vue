@@ -15,7 +15,7 @@ export default defineComponent({
     onMounted(() => {
       resInfo.value = route.query;
       console.log(resInfo.value.resContentType);
-      filePreviewUrl.value = "/api/res_m/res_info/preview?resInfoStore=" + resInfo.value.resInfoStore;
+      filePreviewUrl.value = "/api/res_m/res_info/preview?resInfoCode=" + resInfo.value.resInfoCode;
     });
     return {
       resInfo,

@@ -52,20 +52,6 @@
               >{{ selectedResInfo.resInfoStore }}</el-descriptions-item
             >
           </el-descriptions>
-          <!-- <el-button
-            type="text"
-            size="small"
-            @click="enterDetail(selectedResInfo, 'download')"
-            ><text v-if="selectedResInfo.resInfoType == 'folder'">进入</text
-            ><text v-else>下载</text>
-          </el-button>
-          <el-button
-            v-if="selectedResInfo.resInfoType == 'file'"
-            type="text"
-            size="small"
-            @click="enterDetail(selectedResInfo, 'preview')"
-            >预览</el-button
-          > -->
         </div>
       </div>
     </div>
@@ -90,19 +76,24 @@ export default defineComponent({
     const childShowResInfoData: Ref = ref();
 
     const handleClickResInfo = (row: any, column: any, event: any) => {
-      console.log(row, column, event);
       selectedResInfo.value = row;
       rResInfo.listResTag(row.resInfoCode, (res) => (resTags.value = res));
     };
     const refreshSearchResInfo = (filters: any) => {
       rResInfo.getSearchResInfos(filters, (res: any) => {
-        console.log(filters, res.list);
         childShowResInfoData.value.initTableData(res.list, null);
+      });
+    };
+
+    const refreshRecentResInfo = (filters: any) => {
+      rResInfo.refreshRecentResInfo(filters, (res: any) => {
+        childShowResInfoData.value.initTableData(res, null);
       });
     };
 
     expose({
       refreshSearchResInfo,
+      refreshRecentResInfo
     });
     return {
       selectedResInfo,
