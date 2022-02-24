@@ -1,9 +1,8 @@
 <template>
-  <div style="text-align: start; margin: 5px" v-if="resInfo">
-    <el-button size="small">下载文件</el-button>
+  <div style="text-align: center; margin: 5px；" v-if="resInfo">
     <el-button type="text">{{ resInfo.resInfoName }}</el-button>
+    <el-button size="small">下载文件</el-button>
   </div>
-  <!-- {{resInfo}} -->
   <router-view></router-view>
 </template>
 <script lang="ts">
@@ -21,20 +20,31 @@ export default defineComponent({
 
     onMounted(() => {
       resInfo.value = route.query;
-      let resType = d_const.getResourceType(resInfo.value.resInfoCode);
-      rResInfo.getResInfo(resInfo.value.resInfoCode, resInfo, (res: any) => {
+      if (!resInfo.value.resInfoCode) {
+        router.push({
+          path: "/res_preview/others",
+          query: resInfo.value,
+        });
+      }
+      rResInfo.shareResInfo(resInfo.value.resInfoCode, resInfo, (res: any) => {
         if (d_const.resourceTypes[3].rTypes.indexOf(res.resContentType) > -1) {
-          let url = `${officeOnlineShow}${previewUrl}?resInfoCode=${res.resInfoCode}`;
-          window.open(url);
+          router.push({ path: "/res_preview/doc", query: resInfo.value });
         } else if (
           d_const.resourceTypes[2].rTypes.indexOf(res.resContentType) > -1
         ) {
           router.push({ path: "/res_preview/text", query: resInfo.value });
         } else {
-          router.push({
+          var fileExtension = resInfo.value.resInfoName.split('.').pop().toLowerCase();
+          if (fileExtension == 'ppt' || fileExtension == 'pptx') {
+            router.push({ path: "/res_preview/doc", query: resInfo.value });
+          } else if (fileExtension == 'pdf') {
+            router.push({ path: "/res_preview/pdf", query: resInfo.value });
+          } else {
+            router.push({
             path: "/res_preview/others",
             query: resInfo.value,
           });
+          }
         }
       });
     });

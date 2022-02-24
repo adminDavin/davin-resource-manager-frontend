@@ -4,18 +4,23 @@ const emptyContent = {
   content: {}
 };
 
+
+const getHeader = () => {
+  let tenantId: any = sessionStorage.getItem('tenantId');
+  let userId: any = sessionStorage.getItem('userId');
+  const headers = {
+    tenantId: tenantId,
+    userId: userId
+  }
+  return headers;
+};
+
 export default {
   getResTasks: (rDavin: any) => {
-    let tenantId: any = sessionStorage.getItem('tenantId');
-    let userId: any = sessionStorage.getItem('userId');
-    console.log(tenantId);
     request({ // 获取仓库信息
       url: `/res_task/list`,
       method: "post",
-      headers: {
-        tenantId: tenantId,
-        userId: userId
-      },
+      headers: getHeader(),
       data: emptyContent,
       baseURL: baseUrl,
     })
@@ -24,15 +29,10 @@ export default {
       });
   },
   createResTasks: (rDavin: any, callBack: Function) => {
-    let tenantId: any = sessionStorage.getItem('tenantId');
-    let userId: any = sessionStorage.getItem('userId');
     return request({ // 获取仓库信息
       url: `/res_task/create`,
       method: "post",
-      headers: {
-        tenantId: tenantId,
-        userId: userId
-      },
+      headers: getHeader(),
       data: {
         content: rDavin
       },
@@ -43,17 +43,12 @@ export default {
       });
   },
   uploadRes: (resTaskCode: string, file: any, partNumber: number, callback: Function) => {
-    let tenantId: any = sessionStorage.getItem('tenantId');
-    let userId: any = sessionStorage.getItem('userId');
-    var formData = new FormData();
+      var formData = new FormData();
     formData.append("file", file);
     request({ // 获取仓库信息
       url: `/res_task/upload?resInfoCode=${resTaskCode}&partNumber=${partNumber}`,
       method: "post",
-      headers: {
-        tenantId: tenantId,
-        userId: userId
-      },
+      headers: getHeader(),
       timeout: 120000,
       data: formData,
       baseURL: baseUrl,
@@ -62,17 +57,12 @@ export default {
     });
   },
   uploadResPart: (resTaskCode: string, file: any, partNumber: number, callback: Function) => {
-    let tenantId: any = sessionStorage.getItem('tenantId');
-    let userId: any = sessionStorage.getItem('userId');
-    var formData = new FormData();
+     var formData = new FormData();
     formData.append("file", file);
     request({ // 获取仓库信息
       url: `/res_task/upload?resInfoCode=${resTaskCode}&partNumber=${partNumber}`,
       method: "post",
-      headers: {
-        tenantId: tenantId,
-        userId: userId
-      },
+      headers: getHeader(),
       timeout: 240000,
       data: formData,
       baseURL: baseUrl,

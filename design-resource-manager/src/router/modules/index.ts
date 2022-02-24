@@ -92,40 +92,40 @@ const route: Route[] = [
       
     ]
   },
-  {
-    path: "/document",
-    redirect: '/document/d3_force_graph',
-    component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/index.vue"),
-    meta: { },
-    children: [
-      {
-        path: "d3_force_graph",
-        component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/d3_force_graph/index.vue"),
-        meta: { }
-      },
-      {
-        path: "troisjs",
-        component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/troisjs/index.vue"),
-        meta: { }
-      },
-      {
-        path: "pathfinding",
-        component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/pathfinding/index.vue"),
-        meta: { }
-      },
-      {
-        path: "threejs_vue",
-        component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/threejs_vue/index.vue"),
-        meta: { }
-      },
-      {
-        path: "threejs_ar",
-        component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/threejs_ar/index.vue"),
-        meta: { }
-      }
+  // {
+  //   path: "/document",
+  //   redirect: '/document/d3_force_graph',
+  //   component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/index.vue"),
+  //   meta: { },
+  //   children: [
+  //     {
+  //       path: "d3_force_graph",
+  //       component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/d3_force_graph/index.vue"),
+  //       meta: { }
+  //     },
+  //     {
+  //       path: "troisjs",
+  //       component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/troisjs/index.vue"),
+  //       meta: { }
+  //     },
+  //     {
+  //       path: "pathfinding",
+  //       component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/pathfinding/index.vue"),
+  //       meta: { }
+  //     },
+  //     {
+  //       path: "threejs_vue",
+  //       component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/threejs_vue/index.vue"),
+  //       meta: { }
+  //     },
+  //     {
+  //       path: "threejs_ar",
+  //       component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/document/threejs_ar/index.vue"),
+  //       meta: { }
+  //     }
       
-    ]
-  },
+  //   ]
+  // },
   {
     path: "/waiting",
     component: () => import(/* webpackChunkName: 'waiting' */ "@/views/main/auth_center/waiting.vue"),

@@ -1,101 +1,84 @@
 <template>
-  <el-card body-style="padding: 10px;margin-left: 10px;margin-right: 10px;">
-    <div style="display: flex">
-      <r-show-res-info-data ref="childShowResInfoData"></r-show-res-info-data>
-      <div style="width: 40%" v-if="selectedResInfo">
-        <div style="font-size: var(--el-font-size-large); font-weight: bolder">
-          资源详情
-        </div>
-        <div>
-          <div
-            v-for="item in resTags"
-            :key="item.resTagCode"
-            style="margin: 5px"
-          >
-            <el-tag type="success">{{ item.resTagName }}</el-tag>
-          </div>
-          <el-descriptions :title="selectedResInfo.resInfoName" :column="1">
-            <el-descriptions-item label="资源编号">{{
-              selectedResInfo.resInfoCode
-            }}</el-descriptions-item>
-            <el-descriptions-item label="资源类型">{{
-              selectedResInfo.resInfoType
-            }}</el-descriptions-item>
-            <el-descriptions-item label="资源路径">{{
-              selectedResInfo.resInfoPath
-            }}</el-descriptions-item>
-            <el-descriptions-item label="资源归属者">{{
-              selectedResInfo.resInfoOwnerId
-            }}</el-descriptions-item>
-            <el-descriptions-item label="资源所属类型">{{
-              selectedResInfo.resInfoOwnerType
-            }}</el-descriptions-item>
-            <el-descriptions-item label="资源创建时间">{{
-              selectedResInfo.createdUserId
-            }}</el-descriptions-item>
-            <el-descriptions-item label="资源更新时间">{{
-              selectedResInfo.updatedTime
-            }}</el-descriptions-item>
-            <el-descriptions-item
-              label="文件类型"
-              v-if="selectedResInfo.resInfoType == 'file'"
-              >{{ selectedResInfo.resContentType }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="文件大小"
-              v-if="selectedResInfo.resInfoType == 'file'"
-              >{{ selectedResInfo.resInfoSize }}</el-descriptions-item
-            >
-            <el-descriptions-item
-              label="存储路径"
-              v-if="selectedResInfo.resInfoType == 'file'"
-              >{{ selectedResInfo.resInfoStore }}</el-descriptions-item
-            >
-          </el-descriptions>
-        </div>
-      </div>
+  <div style="margin: 5px">
+    <div style="text-align: end; margin-right: 40px">
+      <text style="font-size: var(--el-font-size-small); margin-right: 10px"
+        >已全部加载 共 {{ resInfoTotal }} 个</text
+      >
+      <r-child-squared-res-info></r-child-squared-res-info>
     </div>
-  </el-card>
+    <r-show-res-info-data ref="childShowResInfoData"></r-show-res-info-data>
+  </div>
 </template>
 <script lang="ts">
-import { defineComponent, inject, Ref, ref } from "vue";
+import { defineComponent, inject, provide, Ref, ref } from "vue";
 import rResInfo from "../r_res_info";
 import b_utils from "@/utils/browser_utils";
 import d_const from "../constants";
 import RShowResInfoData from "../r_table_res_info.vue";
+import SquaredResInfo from "../manager/SquaredResInfo.vue";
 
 export default defineComponent({
   components: {
     "r-show-res-info-data": RShowResInfoData,
+    "r-child-squared-res-info": SquaredResInfo,
   },
   setup(props, context) {
     const { expose } = context;
     const selectedResInfo = ref();
     const resTags = ref();
-    const changeSelectedInfo: any = inject("changeSelectedInfo");
     const childShowResInfoData: Ref = ref();
+    const resInfoTotal = ref(0);
 
     const handleClickResInfo = (row: any, column: any, event: any) => {
       selectedResInfo.value = row;
       rResInfo.listResTag(row.resInfoCode, (res) => (resTags.value = res));
     };
-    const refreshSearchResInfo = (filters: any) => {
+    const initShowResInfoData = (filters: any) => {
       rResInfo.getSearchResInfos(filters, (res: any) => {
+        resInfoTotal.value = res.list.length;
         childShowResInfoData.value.initTableData(res.list, null);
       });
+    };
+    const refreshSearchResInfo = (filters: any) => {
+      initShowResInfoData(filters);
     };
 
     const refreshRecentResInfo = (filters: any) => {
       rResInfo.refreshRecentResInfo(filters, (res: any) => {
+        resInfoTotal.value = res.length;
         childShowResInfoData.value.initTableData(res, null);
       });
     };
 
+    const initShowSortedResInfoData = (
+      sortedFiled: string,
+      sortedType: string
+    ) => {
+      let resInfo = selectedResInfo.value;
+      const params = [{ sortedFiled, sortedType }];
+      // rResInfo.getResInfoDataByParantCode(
+      //   resInfo.resInfoCode,
+      //   { sorted: params },
+      //   (r: any) => {
+      //     resInfoTotal.value = r.length;
+      //     console.log(resInfoTotal.value);
+      //     childShowResInfoData.value.initTableData(r, resInfo);
+      //   }
+      // );
+    };
+
+    provide("handleDropdown", (dropdownItem: any) =>
+      initShowSortedResInfoData(dropdownItem, "desc")
+    );
+    provide("setSquared", (isSquared: string) =>
+      childShowResInfoData.value.initRefreshShowFlag(isSquared)
+    );
     expose({
       refreshSearchResInfo,
-      refreshRecentResInfo
+      refreshRecentResInfo,
     });
     return {
+      resInfoTotal,
       selectedResInfo,
       resTags,
       childShowResInfoData,

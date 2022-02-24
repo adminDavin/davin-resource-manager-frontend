@@ -1,9 +1,6 @@
 <template>
   <div style="display: flex">
     <div style="padding-top: 0px">
-      <!-- <el-icon :size="50" color="#409EFC">
-        <cloudy />
-      </el-icon> -->
     </div>
     <div style="text-align: end; width: 100%; padding-top: 15px;">
         <el-link type="success" style="margin-left: 8px;">我的云存储资源</el-link>

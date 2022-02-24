@@ -4,28 +4,33 @@
       font-size: var(--el-font-size-large);
       font-weight: bolder;
       text-align: center;
-      margin-top: 50px;
     "
     v-if="resInfo"
   >
-    抱歉, 文件格式{{ resInfo.resContentType }}暂不支持预览，研发正在努力更新中
+    <iframe frameborder="0" width="100%" height="800px" :src="fileUrl"></iframe>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { officeOnlineShow, previewUrl } from "@/config/index";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
     const resInfo = ref();
+    const fileUrl = ref();
     onMounted(() => {
       resInfo.value = route.query;
+      
+      let url = `${officeOnlineShow}${previewUrl}?resInfoCode=${resInfo.value.resInfoCode}`;
       console.log(resInfo.value.resContentType);
+      fileUrl.value = url;
     });
     return {
       resInfo,
+      fileUrl
     };
   },
 });

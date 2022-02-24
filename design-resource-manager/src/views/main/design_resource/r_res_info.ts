@@ -80,6 +80,18 @@ export default {
         callback(res.data);
       });
   },
+  shareResInfo: (resInfoCode: string, rDavin: any, callback: Function) => {
+    request({ // 获取仓库信息
+      url: `/shared_resource?resInfoCode=${resInfoCode}`,
+      method: "get",
+      headers: getHeader(),
+      baseURL: baseUrl,
+    })
+      .then((res) => {
+        rDavin.value = res.data;
+        callback(res.data);
+      });
+  },
 
   getChildResInfos: (resInfoCode: string, rDavin: any) => {
     request({ // 获取仓库信息
@@ -243,23 +255,17 @@ export default {
         callback();
       });
   },
-  move: (resInfoCode: string, tResInfoCode: String, callback: Function) => {
+  move: (data: any, callback: Function) => {
     request({
       url: `/move`,
       method: "post",
       headers: getHeader(),
       data: {
-        content: {
-          resInfoCode,
-          tResInfoCode
-        }
+        content: data
       },
       baseURL: baseUrl,
     })
-      .then((res) => {
-        console.log(res);
-        callback();
-      });
+      .then((res) => callback());
   },
   downloadResInfo: (resInfoCode: string, resInfoName: string) => {
     request({ // 获取仓库信息

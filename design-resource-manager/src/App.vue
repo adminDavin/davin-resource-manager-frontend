@@ -1,5 +1,5 @@
 <template>
-  <el-container :style="{ height: scrollerHeight }">
+  <el-container style="width: 100%;">
     <el-main>
       <el-config-provider :locale="locale">
         <router-view></router-view>
@@ -22,7 +22,7 @@ export default defineComponent({
   },
   setup() {
     let scrollerHeight = computed(() => {
-      return window.innerHeight - 10 + "px";
+      return window.innerHeight - 20 + "px";
     });
     return {
       locale: zhCn,

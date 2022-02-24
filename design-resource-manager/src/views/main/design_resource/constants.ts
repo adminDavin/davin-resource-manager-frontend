@@ -54,7 +54,7 @@ const getResourceType = (resContentType: string) => {
       return item;
     }
   }
-  return resourceTypes[8];
+  return resourceTypes[5];
 };
 
 export default {

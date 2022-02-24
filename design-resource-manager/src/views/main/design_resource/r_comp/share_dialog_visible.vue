@@ -1,14 +1,14 @@
 <template>
   <el-dialog v-model="shareDialogVisible" title="分享文件" width="60%">
     <div>{{ shareResInfoDesc }}</div>
-    <el-button type="text" @click="handleCopyShareResInfoDesc"
+    <el-button type="text" @click="handleCopyShareResInfoDesc(shareResInfoDesc)"
       >点击复制</el-button
     >
   </el-dialog>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { previewUrl } from "@/config/index";
+import { currentDomain } from "@/config/index";
 
 export default defineComponent({
   setup(props, context) {
@@ -24,7 +24,7 @@ export default defineComponent({
     expose({
       initPickedResInfo: (resInfo: any) => {
         pickedResInfo.value = resInfo;
-        shareResInfoDesc.value = `${previewUrl}?resInfoCode=${resInfo.resInfoCode}`;
+        shareResInfoDesc.value = `${currentDomain}#/res_preview?resInfoCode=${resInfo.resInfoCode}`;
         shareDialogVisible.value = true;
       },
     });

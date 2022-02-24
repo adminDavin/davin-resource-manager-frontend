@@ -21,8 +21,7 @@
         <el-upload
           drag
           action=""
-          :http-request="submitUpload"
-          :before-upload="beforeUpload"
+          :http-request="beforeUpload"
           :show-file-list="false"
         >
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -71,6 +70,7 @@
               >
             </div>
           </div>
+          {{ resTasks }}
         </div>
       </el-main>
     </el-container>
@@ -80,108 +80,44 @@
 <script lang="ts">
 import { defineComponent, inject, onMounted, ref } from "vue";
 import rResTask from "../r_res_task";
-import { useStore } from "vuex";
-import bUtils from "@/utils/browser_utils";
-import SparkMD5 from "spark-md5";
+import fo from "./FileOperate";
 
 export default defineComponent({
   components: {},
   setup(props, context) {
-    const store = useStore();
+    const refreshResInfos: any = inject("refreshResInfos");
     const { expose } = context;
     const drawer = ref(false);
-    const uploadFile = ref();
-    const resTaskCode = ref();
-    const partCount = ref();
     const resInfoStatus = ref(0);
-    
-    const isNeedPartUpload = ref(false);
     const pickedResInfo = ref({
       resInfoCode: "",
       resInfoName: "",
-      resInfoStatus: 90,
     });
-    const refreshResInfos: any = inject("refreshResInfos");
+
     const resTasks = ref();
     const importAction = (resInfoCode: string, resInfoName: string) => {
       drawer.value = true;
-      uploadFile.value = null;
       pickedResInfo.value.resInfoCode = resInfoCode;
       pickedResInfo.value.resInfoName = resInfoName;
       rResTask.getResTasks(resTasks);
     };
-    const submitUpload = (upload: any) => {
-      let file: File = upload.file;
-      let dataFile = file;
 
-      if (isNeedPartUpload.value) {
-        // 不用分片上传
-        rResTask.uploadRes(resTaskCode.value, file, 0, (res: any) => {
-          rResTask.getResTasks(resTasks);
-          refreshResInfos();
-        });
-      } else {
-        let spark = new SparkMD5();
-        let fileReader = new FileReader();
-        if (dataFile.size > 1024 * 1024 * 5) {
-          let data1 = dataFile.slice(0, 1024 * 1024 * 5);
-          fileReader.readAsBinaryString(data1);
-        } else {
-          fileReader.readAsBinaryString(dataFile);
-        }
-        fileReader.onload = function (e: any) {
-          spark.appendBinary(e.target.result);
-          let md5 = spark.end();
-          uploadPart(file, 0, md5);
-        };
-      }
-    };
-    const uploadPart = (file: File, num: number, md5: any) => {
-      let bytesPerPiece = 5 * 1024 * 1024;
-      let start = num * bytesPerPiece;
-      let end = start + bytesPerPiece;
-      if (start >= file.size) return;
-      if (end > file.size) {
-        end = file.size;
-      }
-      rResTask.uploadRes(
-        resTaskCode.value,
-        file.slice(start, end),
-        num + 1,
+    const beforeUpload = (upload: any) => {
+      fo.beforeSimpleUpload(
+        pickedResInfo.value.resInfoCode,
+        upload.file,
         (res: any) => {
-          rResTask.getResTasks(resTasks);
-          let task = res.data;
-          resInfoStatus.value = Math.ceil(task.resTaskStatus/task.partCount * 100);
-          uploadPart(file, ++num, md5);
           refreshResInfos();
           rResTask.getResTasks(resTasks);
-        }
-      );
-    };
-    const beforeUpload = (file: File) => {
-      // 计算总片数
-      let bytesPerPiece = 5 * 1024 * 1024; // 每个文件切片大小定为50MB
-      partCount.value = Math.ceil(file.size / bytesPerPiece); // 总片数
-      return rResTask.createResTasks(
-        {
-          resInfoParentCode: pickedResInfo.value.resInfoCode,
-          filename: file.name,
-          partCount: partCount.value,
-          fileSize: file.size,
-          contentType: "application/octet-stream",
-        },
-        (res: any) => {
-          resTaskCode.value = res.resTask.resTaskCode;
-          isNeedPartUpload.value = res.partUploadId == null;
+          resInfoStatus.value = Math.ceil(
+            (res.data.resTaskStatus / res.data.partCount) * 100
+          );
         }
       );
     };
 
-    onMounted(() => {
-      sessionStorage.setItem("tenantId", store.state.user.info.tenantId);
-      sessionStorage.setItem("userId", store.state.user.info.userId);
-      rResTask.getResTasks(resTasks);
-    });
+    onMounted(() => rResTask.getResTasks(resTasks));
+    
     expose({
       importAction,
     });
@@ -190,8 +126,6 @@ export default defineComponent({
       resInfoStatus,
       pickedResInfo,
       resTasks,
-      importAction,
-      submitUpload,
       beforeUpload,
     };
   },

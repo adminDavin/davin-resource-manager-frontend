@@ -11,10 +11,12 @@ const wxConf = {
 
 const officeOnlineShow = 'https://view.officeapps.live.com/op/view.aspx?src=';
 const previewUrl = 'https://to0-ai.com/api/res_m/res_info/preview';
+const currentDomain = 'https://www.to0-ai.com/d_res/';
 
 export {
   systemTitle,
   officeOnlineShow,
   previewUrl,
+  currentDomain,
   wxConf
 }

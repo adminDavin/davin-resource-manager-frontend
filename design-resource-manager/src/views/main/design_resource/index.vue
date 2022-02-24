@@ -16,10 +16,10 @@
           style="width: min-content"
           :default-active="resourceType"
           @select="handleActiveMenuAction"
-          default-openeds="-1"
+          :default-openeds="[`-1`]"
           width="200px"
         >
-          <el-sub-menu :index="-1">
+          <el-sub-menu :index="`-1`">
             <template #title>
               <span>我的文件</span>
             </template>
@@ -63,9 +63,29 @@
               <el-radio label="2" size="small">仅文件</el-radio>
             </el-radio-group>
           </el-col>
+          <el-col :span="3" :offset="1">
+            <el-button
+            style="margin-top: 7px;"
+              size="small"
+              type="info"
+              @click="handleTransmissionDialog"
+              >传输列表</el-button
+            ><el-button
+            style="margin-top: 7px;"
+              size="small"
+              type="success"
+              @click="handleTransmissionDialog"
+              >标签管理</el-button
+            >
+            </el-col
+          >
+          
         </el-row>
-        <div style="margin-top: 10px; margin-left: 10px">
+        <!-- <div style="margin-top: 10px; margin-left: 10px">
           <r-model-res-tag ref="childManageResTag"></r-model-res-tag>
+        </div> -->
+        <div style="margin-left: 10px">
+          <r-dialog-transmission ref="dialogTransmission" />
         </div>
         <r-res-info-manager
           v-show="selectResInfo"
@@ -96,6 +116,7 @@ import RResInfoMananger from "./manager/index.vue";
 import constants from "./constants";
 import rResInfo from "./r_res_info";
 import RDResHeader from "./header.vue";
+import RDialogTransmission from "./RDialogTransmission.vue";
 
 export default defineComponent({
   components: {
@@ -103,6 +124,7 @@ export default defineComponent({
     "r-res-info-search": RResInfoSearch,
     "r-res-info-manager": RResInfoMananger,
     "r-d-res-header": RDResHeader,
+    "r-dialog-transmission": RDialogTransmission,
   },
   setup() {
     const store = useStore();
@@ -116,6 +138,7 @@ export default defineComponent({
     const childManageResTag: Ref = ref();
     const childSearchResInfo: Ref = ref();
     const childManagerResInfo: Ref = ref();
+    const dialogTransmission: Ref = ref();
 
     const selectResInfo = ref();
 
@@ -191,6 +214,9 @@ export default defineComponent({
         childManagerResInfo.value.initOnMount(res.resInfoCode);
       });
     });
+    provide("getRootResInfo", (selectResInfo: any, callBack: Function) => {
+      rResInfo.getRootResInfo(selectResInfo, callBack);
+    });
     provide("searchByRasTagCode", (resTagCode: string) => {
       if (selectedTag.value.indexOf(resTagCode) > -1) {
         delete selectedTag.value[selectedTag.value.indexOf(resTagCode)];
@@ -204,6 +230,15 @@ export default defineComponent({
       refreshSearchData(filters);
     });
 
+    const handleTransmissionDialog = () => {
+      let userId: any = sessionStorage.getItem("userId");
+      dialogTransmission.value?.init({
+        ownerId: userId,
+        ownerType: "MINE",
+      });
+    };
+
+    provide("handleTransmissionDialog", handleTransmissionDialog);
     provide("refreshResInfos", () => refreshSearchData(initSearchData()));
 
     provide("changeSelectedInfo", (resInfo: any, action: string) => {
@@ -223,6 +258,8 @@ export default defineComponent({
       childManageResTag,
       childSearchResInfo,
       childManagerResInfo,
+      dialogTransmission,
+      handleTransmissionDialog,
       handleActiveMenuAction,
       handleRadioChange,
     };
