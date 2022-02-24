@@ -28,72 +28,75 @@
       >
       <dialog-show-all-folder ref="dialogShowAllFolder" />
     </div>
-    <el-row :gutter="5">
-      <el-col :sm="12" :md="6" :lg="3">
-        <el-card
-          style="text-align: center; margin-bottom: 5px"
-          shadow="hover"
-          @click="handleUploadResource"
-          body-style="padding: 0px;"
-        >
-          <div @drop="onDrag($event, null, 'drop')" @dragover.prevent>
-            <div style="font-size: 72px; margin-top: 15px; color: darkviolet">
-              +
-            </div>
-            <el-button type="text">点击“上传”按钮</el-button>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col
-        :sm="12"
-        :md="6"
-        :lg="3"
-        v-for="(item, index) in data"
-        :key="item.id"
-      >
-        <el-card
-          style="text-align: center; margin-bottom: 5px"
-          shadow="never"
-          body-style="padding: 0px;"
-          @click.stop="handleSelectedResInfo($event, item, 'showOperate')"
-          @dblclick.stop="handleClickResInfo(item, index, $event)"
-        >
+    <el-table :data="data" @row-dblclick="handleClickResInfo">
+      <el-table-column label="文件名称" prop="resInfoName" sortable>
+        <template #default="props">
           <div
+            style="display: flex"
             :draggable="true"
-            @dragstart="onDrag($event, item, 'dragstart')"
-            @drop="onDrag($event, item, 'drop')"
+            @dragstart="onDrag($event, props.row, 'dragstart')"
+            @drop="onDrag($event, props.row, 'drop')"
             @dragover.prevent
+            @mouseenter="handleResInfoMouseOver(props.row)"
+            @mouseleave="handleResInfoMouseOver(props.row)"
           >
-            <div
-              @mouseenter="handleResInfoMouseOver(item)"
-              @mouseleave="handleResInfoMouseOver(item)"
-            >
-              <div style="height: 32px; display: flex">
-                <el-checkbox
-                  v-model="item.selected"
-                  class="ml20r10"
-                  @click.stop=""
-                />
-                <div v-show="focusOnResInfo && focusOnResInfo.id == item.id">
-                  <r-res-info-operate :item="item" />
-                </div>
+            <el-checkbox
+              v-model="props.row.selected"
+              class="ml20r10"
+              @click.stop=""
+            />
+            <el-image
+              fit="scale-down"
+              style="width: 55px"
+              :src="props.row.image"
+            />
+            <div>
+              <div style="font-size: var(--el-font-size-base)">
+                {{ props.row.resInfoName }}
               </div>
-              <el-image
-                draggable="false"
-                fit="scale-down"
-                style="width: 50%"
-                :src="item.image"
-              />
+              <div v-show="focusOnResInfo && focusOnResInfo.id == props.row.id">
+                <r-res-info-operate :item="props.row" />
+              </div>
             </div>
-            <el-tooltip :content="item.resInfoName" placement="bottom">
-              <el-button type="text" style="overflow: hidden">{{
-                item.resInfoName
-              }}</el-button>
-            </el-tooltip>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="类别"
+        prop="category"
+        width="120"
+      ></el-table-column>
+      <el-table-column label="大小" prop="size" sortable width="120">
+      </el-table-column>
+      <el-table-column
+        label="最后一次修改"
+        prop="updatedTime"
+        sortable
+        width="160"
+      >
+        <template #default="props">
+          <div style="font-size: var(--el-font-size-base)">
+            {{ props.row.updatedTime }}
+          </div>
+          <div
+            style="font-size: var(--el-font-size-small); font-weight: bolder"
+          >
+            {{ props.row.updatedUserId }}
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-card
+      style="text-align: center; margin-bottom: 5px"
+      shadow="hover"
+      @click="handleUploadResource"
+      body-style="padding: 0px;"
+    >
+      <div @drop="onDrag($event, null, 'drop')" @dragover.prevent>
+        <div style="font-size: 20px; margin-top: 5px; color: darkviolet">+</div>
+        <el-button type="text">点击“上传”按钮</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 <script lang="ts">
@@ -183,9 +186,8 @@ export default defineComponent({
       }
     };
 
-    const handleUploadResource = () => {
+    const handleUploadResource = () =>
       handleTransmissionDialog("create", pResInfo.value.resInfoCode);
-    };
     onMounted(() => dh.disableDefaultDrag(document.querySelector("body")));
     expose({
       initData: (d: any, temPResInfo: any) => (

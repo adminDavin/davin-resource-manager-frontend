@@ -1,65 +1,9 @@
 <template>
   <div style="width: 98%" class="dropbox">
-    <div v-show="isSquared == 'true'">
-      <ResInfoSquared ref="resInfoSquared" />
-      <!-- <el-row :gutter="10">
-        <el-col
-          :xs="12"
-          :sm="8"
-          :md="6"
-          :lg="3"
-          :xl="2"
-          v-for="(item, index) in tableData"
-          :key="item.id"
-        >
-          <el-card
-            style="text-align: center; margin-bottom: 5px"
-            shadow="never"
-            body-style="padding: 0px;"
-            @click="handleSelectedResInfo(item, 'showOperate')"
-            @dblclick="handleClickResInfo(item, index, $event)"
-          >
-            <div>
-              <div
-                @mouseenter="handleOnResInfo(item, 'enter', $event)"
-                @mouseleave="handleOnResInfo(item, 'leave', $event)"
-              >
-                <div style="height: 32px">
-                  <div
-                    style="
-                      font-size: var(--el-font-size-small);
-                      text-align: end;
-                    "
-                    v-show="focusOnResInfo && focusOnResInfo.id == item.id"
-                  >
-                    <r-res-info-operate :item="item"></r-res-info-operate>
-                  </div>
-                </div>
-                <div>
-                  <el-image
-                    draggable="false"
-                    fit="scale-down"
-                    style="width: 50%"
-                    :src="item.image"
-                  />
-                </div>
-              </div>
-              <el-tooltip
-                draggable="false"
-                :content="item.resInfoName"
-                placement="bottom"
-              >
-                <el-button type="text" style="overflow: hidden">{{
-                  item.resInfoName
-                }}</el-button>
-              </el-tooltip>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row> -->
-    </div>
+    <ResInfoSquared v-show="isSquared == 'true'" ref="resInfoSquared" />
     <div v-show="isSquared != 'true'">
-      <el-table :data="tableData" @row-dblclick="handleClickResInfo">
+      <ResInfoTable v-show="isSquared != 'true'" ref="resInfoTable" />
+      <!-- <el-table :data="tableData" @row-dblclick="handleClickResInfo">
         <el-table-column type="expand" prop="id"></el-table-column>
         <el-table-column label="文件名称" prop="resInfoName" sortable>
           <template #default="props">
@@ -116,7 +60,7 @@
             </div>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
     </div>
   </div>
   <r-child-tag-dialog ref="rChildTagDialog" />
@@ -136,10 +80,12 @@ import RChildDownloadDialog from "./r_comp/download_dialog_visible.vue";
 import RChildResInfoDetailDrawer from "./r_comp/res_info_detail.vue";
 import RResInfoOperate from "./r_comp/r_comp_res_info_operate.vue";
 import ResInfoSquared from "./r_show_res_info/ResInfoSquared.vue";
+import ResInfoTable from "./r_show_res_info/ResInfoTable.vue";
 
 export default defineComponent({
   components: {
     ResInfoSquared: ResInfoSquared,
+    ResInfoTable: ResInfoTable,
     "r-res-info-operate": RResInfoOperate,
     "r-child-tag-dialog": RChildTagDialog,
     "r-child-share-dialog": RChildShareDialog,
@@ -162,7 +108,8 @@ export default defineComponent({
     const focusOnResInfo = ref();
     const dragOnTagetResInfo = ref();
 
-    const resInfoSquared = ref();
+    const resInfoSquared: Ref = ref();
+    const resInfoTable: Ref = ref();
     const rChildTagDialog: Ref = ref();
     const rChildShareDialog: Ref = ref();
     const rChildDownloadDialog: Ref = ref();
@@ -185,7 +132,8 @@ export default defineComponent({
         }
       }
       tableData.value = resInfoData;
-      resInfoSquared.value?.initData(resInfoData);
+      resInfoSquared.value?.initData(resInfoData, parentRInfo);
+      resInfoTable.value?.initData(resInfoData, parentRInfo);
       parentResInfo.value = parentRInfo;
     };
 
@@ -260,6 +208,7 @@ export default defineComponent({
       focusOnResInfo,
 
       resInfoSquared,
+      resInfoTable,
       rChildTagDialog,
       rChildShareDialog,
       rChildDownloadDialog,

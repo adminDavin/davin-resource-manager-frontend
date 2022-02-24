@@ -1,7 +1,7 @@
 <template>
   <el-breadcrumb separator="/">
     <el-breadcrumb-item v-for="(item, index) in allParentResInfo" :key="index">
-      <el-button type="text" @click="initByParentCode(item.resInfoCode)">
+      <el-button type="text" style="margin-bottom: 5px" @click="initByParentCode(item.resInfoCode)">
         {{ item.resInfoName == "/" ? "全部文件" : item.resInfoName }}
       </el-button>
     </el-breadcrumb-item>

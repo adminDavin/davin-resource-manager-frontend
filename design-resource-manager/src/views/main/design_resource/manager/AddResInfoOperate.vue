@@ -1,9 +1,8 @@
 <template>
   <div style="margin-right: 20px; margin-top: 3px">
-    <el-button @click="createResourceAction('file')" type="success" size="small"
+    <el-button @click="createResourceAction('file', selectedResInfo.resInfoCode)" type="success" size="small"
       >上传文件</el-button
     >
-    <r-model-transmission ref="childModelTransmission" />
     <el-popover v-model:visible="visible" placement="bottom" :width="200">
       <el-input
         v-model="inputResInfoPath"
@@ -28,30 +27,22 @@
 import { defineComponent, inject, provide, Ref, ref } from "vue";
 import b_utils from "@/utils/browser_utils";
 import rResInfo from "../r_res_info";
-import RModelTransmission from "./r_model_transmission.vue";
 
 export default defineComponent({
   components: {
-    "r-model-transmission": RModelTransmission,
   },
   setup(props, context) {
     const { expose } = context;
     const selectedResInfo = ref();
-    const inputFlag = ref(false);
     const visible = ref(false);
     const inputResInfoPath = ref();
-    const childModelTransmission: Ref = ref();
     const refreshResInfos: any = inject("refreshResInfos");
-    // const initShowSortedResInfoData: any = inject("initShowSortedResInfoData");
-    
+    const handleTransmissionDialog: any = inject("handleTransmissionDialog");
+
     // 创建文件
-    const createResourceAction = (resType: string) => {
+    const createResourceAction = (resType: string, resInfoCode: string) => {
       if (resType == "file") {
-        let resInfo = selectedResInfo.value;
-        childModelTransmission.value.importAction(
-          resInfo.resInfoCode,
-          resInfo.resInfoPath
-        );
+        handleTransmissionDialog("create", resInfoCode);
       }
     };
 
@@ -67,15 +58,15 @@ export default defineComponent({
       }
       inputResInfoPath.value = null;
     };
-
+    
     expose({
       initSelectedResInfo: (resInfo: any) => (selectedResInfo.value = resInfo),
     });
 
     return {
       visible,
+      selectedResInfo,
       inputResInfoPath,
-      childModelTransmission,
       createResourceAction,
       inputResInfoConform,
     };

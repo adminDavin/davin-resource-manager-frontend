@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="font-size: var(--el-font-size-small); text-align: end"
-    v-if="item"
-  >
+  <div style="font-size: var(--el-font-size-small)" v-if="item">
     {{ focusOnResInfo }}
     <el-button
       type="text"

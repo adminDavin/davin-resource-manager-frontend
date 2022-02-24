@@ -3,9 +3,6 @@
     <div style="margin-left: 50px">
       <r-child-show-breadcrumb-res-info ref="childShowBreadcrumbResInfo" />
       <el-divider></el-divider>
-      <li @click="handleClickFolder()">
-        <el-button type="text">移动到当前路径下</el-button>
-      </li>
       <li
         v-for="item in allChildResInfo"
         @click="handleDbClickFolder(item)"
@@ -14,6 +11,14 @@
         <el-button type="text">{{ item.resInfoName }}</el-button>
       </li>
     </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleClickFolder()"
+          >确定</el-button
+        >
+      </span>
+    </template>
   </el-dialog>
 </template>
 <script lang="ts">

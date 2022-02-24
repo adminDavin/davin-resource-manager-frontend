@@ -46,7 +46,7 @@ const dropForUpload = (files: any, resInfo: any, callback: Function) => {
     let upLoadsFiles: any = {};
 
     let showContent = [
-      h("p", null, `资源文件将上传至路径: ${resInfoParentPath}`),
+      h("p", null, `资源文件开始上传`),
     ];
     for (let file of files) {
       showContent.push(h("p", null, `资源文件: ${file.name}`));

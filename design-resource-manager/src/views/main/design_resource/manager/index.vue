@@ -4,22 +4,23 @@
       <el-col :sm="24" :md="5" :lg="4"
         ><r-child-add-res-info-operate ref="childAddResInfoOperate"
       /></el-col>
-      <el-col :sm="12" :md="14" :lg="16">
-        <r-child-show-breadcrumb-res-info ref="childShowBreadcrumbResInfo" />
+    </el-row>
+    <el-row style="display: flex">
+      <el-col :sm="24" :md="16" :lg="20">
+        <div style="margin-left: 10px">
+          <r-child-show-breadcrumb-res-info ref="childShowBreadcrumbResInfo" />
+        </div>
       </el-col>
-      <el-col :sm="24" :md="3" :lg="4">
-        <div style="display: flex">
-          <div style="margin: 7px">
-            <text
-              style="font-size: var(--el-font-size-small)"
-              >已全部加载 共 {{ resInfoTotal }} 个</text
-            >
+      <el-col :sm="24" :md="8" :lg="4">
+        <div style="display: flex; margin-top: 7px">
+          <div style="font-size: var(--el-font-size-base); margin-top: 2px">
+            已全部加载 共 {{ resInfoTotal }} 个
           </div>
           <r-child-squared-res-info />
         </div>
       </el-col>
     </el-row>
-
+    <el-divider></el-divider>
     <r-show-res-info-data ref="childShowResInfoData" />
   </div>
 </template>
@@ -128,4 +129,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.el-divider--horizontal {
+  margin: 2px 2px;
+}
+</style>

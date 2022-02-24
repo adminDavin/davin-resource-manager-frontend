@@ -65,21 +65,19 @@
           </el-col>
           <el-col :span="3" :offset="1">
             <el-button
-            style="margin-top: 7px;"
+              style="margin-top: 7px"
               size="small"
               type="info"
               @click="handleTransmissionDialog"
               >传输列表</el-button
             ><el-button
-            style="margin-top: 7px;"
+              style="margin-top: 7px"
               size="small"
               type="success"
               @click="handleTransmissionDialog"
               >标签管理</el-button
             >
-            </el-col
-          >
-          
+          </el-col>
         </el-row>
         <!-- <div style="margin-top: 10px; margin-left: 10px">
           <r-model-res-tag ref="childManageResTag"></r-model-res-tag>
@@ -87,6 +85,7 @@
         <div style="margin-left: 10px">
           <r-dialog-transmission ref="dialogTransmission" />
         </div>
+        <r-model-transmission ref="childModelTransmission" />
         <r-res-info-manager
           v-show="selectResInfo"
           ref="childManagerResInfo"
@@ -117,6 +116,7 @@ import constants from "./constants";
 import rResInfo from "./r_res_info";
 import RDResHeader from "./header.vue";
 import RDialogTransmission from "./RDialogTransmission.vue";
+import RModelTransmission from "./manager/r_model_transmission.vue";
 
 export default defineComponent({
   components: {
@@ -125,6 +125,7 @@ export default defineComponent({
     "r-res-info-manager": RResInfoMananger,
     "r-d-res-header": RDResHeader,
     "r-dialog-transmission": RDialogTransmission,
+    "r-model-transmission": RModelTransmission,
   },
   setup() {
     const store = useStore();
@@ -139,6 +140,7 @@ export default defineComponent({
     const childSearchResInfo: Ref = ref();
     const childManagerResInfo: Ref = ref();
     const dialogTransmission: Ref = ref();
+    const childModelTransmission: Ref = ref();
 
     const selectResInfo = ref();
 
@@ -230,10 +232,9 @@ export default defineComponent({
       refreshSearchData(filters);
     });
 
-    const handleTransmissionDialog = () => {
-      let userId: any = sessionStorage.getItem("userId");
-      dialogTransmission.value?.init({
-        ownerId: userId,
+    const handleTransmissionDialog = (rType: string, resInfoCode: string) => {
+      childModelTransmission.value?.importAction(rType, resInfoCode, {
+        ownerId: sessionStorage.getItem("userId"),
         ownerType: "MINE",
       });
     };
@@ -259,6 +260,7 @@ export default defineComponent({
       childSearchResInfo,
       childManagerResInfo,
       dialogTransmission,
+      childModelTransmission,
       handleTransmissionDialog,
       handleActiveMenuAction,
       handleRadioChange,

@@ -16,12 +16,14 @@ const getHeader = () => {
 };
 
 export default {
-  getResTasks: (rDavin: any) => {
+  getResTasks: (params: any, rDavin: any) => {
     request({ // 获取仓库信息
       url: `/res_task/list`,
       method: "post",
       headers: getHeader(),
-      data: emptyContent,
+      data: {
+        content: params
+      },
       baseURL: baseUrl,
     })
       .then((res) => {

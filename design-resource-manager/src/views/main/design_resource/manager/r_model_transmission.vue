@@ -1,5 +1,5 @@
 <template>
-  <el-drawer v-model="drawer" size="70%" :with-header="false">
+  <el-drawer v-model="drawer" size="45%" :with-header="false">
     <el-container style="margin-right: 30px">
       <el-aside width="130px">
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
@@ -15,10 +15,8 @@
         </el-menu>
       </el-aside>
       <el-main style="margin-top: 30px">
-        <div style="font-size: var(--el-font-size-base); font-weight: bolder">
-          上传至目标路径: <el-link>{{ pickedResInfo.resInfoName }}</el-link>
-        </div>
         <el-upload
+          v-if="actionType == 'create'"
           drag
           action=""
           :http-request="beforeUpload"
@@ -56,21 +54,20 @@
                 "
               >
                 {{ item.resTaskStatus == 0 ? "已完成" : "进行中" }}
-                <el-button size="small" type="success"> 打开所在目录</el-button>
               </div>
             </div>
             <div>
+              <el-button size="small" type="text"> 打开</el-button>
               {{ Math.ceil(item.resInfoSize / 1024) }}
               <text
                 style="
                   font-size: var(--el-font-size-small);
-                  font-weight: bolder;
                 "
                 >KB</text
               >
             </div>
+            <el-divider></el-divider>
           </div>
-          {{ resTasks }}
         </div>
       </el-main>
     </el-container>
@@ -85,21 +82,23 @@ import fo from "./FileOperate";
 export default defineComponent({
   components: {},
   setup(props, context) {
-    const refreshResInfos: any = inject("refreshResInfos");
     const { expose } = context;
     const drawer = ref(false);
     const resInfoStatus = ref(0);
+    const taskParams = ref();
+    const actionType = ref();
     const pickedResInfo = ref({
       resInfoCode: "",
       resInfoName: "",
     });
 
     const resTasks = ref();
-    const importAction = (resInfoCode: string, resInfoName: string) => {
+    const importAction = (rType: string, resInfoCode: string, params: any) => {
       drawer.value = true;
+      actionType.value = rType;
       pickedResInfo.value.resInfoCode = resInfoCode;
-      pickedResInfo.value.resInfoName = resInfoName;
-      rResTask.getResTasks(resTasks);
+      taskParams.value = params;
+      rResTask.getResTasks(params, resTasks);
     };
 
     const beforeUpload = (upload: any) => {
@@ -107,8 +106,7 @@ export default defineComponent({
         pickedResInfo.value.resInfoCode,
         upload.file,
         (res: any) => {
-          refreshResInfos();
-          rResTask.getResTasks(resTasks);
+          rResTask.getResTasks(taskParams.value, resTasks);
           resInfoStatus.value = Math.ceil(
             (res.data.resTaskStatus / res.data.partCount) * 100
           );
@@ -116,8 +114,8 @@ export default defineComponent({
       );
     };
 
-    onMounted(() => rResTask.getResTasks(resTasks));
-    
+    onMounted(() => rResTask.getResTasks(taskParams.value, resTasks));
+
     expose({
       importAction,
     });
@@ -126,6 +124,7 @@ export default defineComponent({
       resInfoStatus,
       pickedResInfo,
       resTasks,
+      actionType,
       beforeUpload,
     };
   },
