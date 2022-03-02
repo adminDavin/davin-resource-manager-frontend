@@ -85,7 +85,7 @@ export default defineComponent({
         if (resInfo.resInfoType == "folder") {
           changeSelectedInfo(resInfo, "enter");
         } else {
-          rResInfo.downloadMultiResInfo(resInfo.resInfoCode, resInfo.resInfoSize, resInfo.resInfoName, downloadProcess);
+          rResInfo.downloadMultiResInfo(resInfo.resInfoCode, resInfo.resInfoSize, resInfo.resInfoName, () => {});
         }
       } else if (action == "delete") {
         rResInfo.delete(resInfo.resInfoCode, () => refreshResInfos());

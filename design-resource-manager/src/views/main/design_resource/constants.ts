@@ -27,7 +27,8 @@ const resourceTypes = [
       'application/msword',
       'application/vnd.ms-excel',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'PPT'
+      'PPT',
+      'text/csv'
     ],
     key: 'excel',
     icon: 'aim',
@@ -57,7 +58,17 @@ const getResourceType = (resContentType: string) => {
   return resourceTypes[5];
 };
 
+const getResourceTypeByIndex = (index: string) => { 
+  for (let item of resourceTypes) { 
+    if (item.index == index) { 
+      return item;
+    }
+  }
+  return resourceTypes[5];
+};
+
 export default {
   getResourceType: getResourceType,
+  getResourceTypeByIndex: getResourceTypeByIndex,
   resourceTypes: resourceTypes
 };

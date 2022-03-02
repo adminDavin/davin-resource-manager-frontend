@@ -5,21 +5,26 @@
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
           传输列表
         </div>
-        <el-menu default-active="0">
-          <el-menu-item index="0">
+        <el-menu
+          style="width: min-content"
+          :default-active="defaultActiveMenu"
+          @select="handleActiveMenuAction"
+        >
+          <el-menu-item index="UPLOAD">
             <template #title>文件上传</template>
           </el-menu-item>
-          <el-menu-item index="1">
+          <el-menu-item index="DOWNLOAD">
             <template #title>文件下载</template>
           </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main style="margin-top: 30px">
         <el-upload
-          v-if="actionType == 'create'"
+          v-if="actionType == 'create' && defaultActiveMenu == 'UPLOAD'"
           drag
           action=""
           :http-request="beforeUpload"
+          webkitdirectory
           :show-file-list="false"
         >
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -27,10 +32,6 @@
             将文件拖动到此处 or <em>点击上传文件</em>
           </div>
         </el-upload>
-        <el-progress
-          :percentage="resInfoStatus"
-          v-if="resInfoStatus !== 0"
-        ></el-progress>
         <div style="font-size: var(--el-font-size-base); font-weight: bolder">
           任务列表
         </div>
@@ -53,18 +54,18 @@
                   font-weight: bolder;
                 "
               >
-                {{ item.resTaskStatus == 0 ? "已完成" : "进行中" }}
+                <el-button size="small" @click="deleteTask(item)" type="text">删除记录</el-button>
               </div>
             </div>
-            <div>
-              <el-button size="small" type="text"> 打开</el-button>
+            <el-progress
+              :percentage="
+                Math.ceil((item.resTaskStatus / item.partCount) * 100)
+              "
+              v-if="item.resTaskStatus !== 0"
+            ></el-progress>
+            <div v-if="item.resTaskStatus == 0">
               {{ Math.ceil(item.resInfoSize / 1024) }}
-              <text
-                style="
-                  font-size: var(--el-font-size-small);
-                "
-                >KB</text
-              >
+              <text style="font-size: var(--el-font-size-small)">KB</text>
             </div>
             <el-divider></el-divider>
           </div>
@@ -83,49 +84,63 @@ export default defineComponent({
   components: {},
   setup(props, context) {
     const { expose } = context;
+    const refreshResInfos: any = inject("refreshResInfos");
     const drawer = ref(false);
     const resInfoStatus = ref(0);
     const taskParams = ref();
     const actionType = ref();
-    const pickedResInfo = ref({
-      resInfoCode: "",
-      resInfoName: "",
-    });
+    const defaultActiveMenu = ref("UPLOAD");
+    const pickedResInfoCode = ref();
 
     const resTasks = ref();
     const importAction = (rType: string, resInfoCode: string, params: any) => {
       drawer.value = true;
       actionType.value = rType;
-      pickedResInfo.value.resInfoCode = resInfoCode;
+      if (rType == "download") {
+        defaultActiveMenu.value = "DOWNLOAD";
+      }
+      pickedResInfoCode.value = resInfoCode;
       taskParams.value = params;
+      refreshTask(params);
+    };
+
+    const refreshTask = (params: string) => {
+      params["resTaskType"] = defaultActiveMenu.value;
       rResTask.getResTasks(params, resTasks);
+    };
+
+    const handleActiveMenuAction = (index: any) => {
+      defaultActiveMenu.value = index;
+      refreshTask(taskParams.value);
     };
 
     const beforeUpload = (upload: any) => {
       fo.beforeSimpleUpload(
-        pickedResInfo.value.resInfoCode,
+        pickedResInfoCode.value,
         upload.file,
         (res: any) => {
-          rResTask.getResTasks(taskParams.value, resTasks);
-          resInfoStatus.value = Math.ceil(
-            (res.data.resTaskStatus / res.data.partCount) * 100
-          );
+          refreshTask(taskParams.value);
+          refreshResInfos();
         }
       );
     };
 
-    onMounted(() => rResTask.getResTasks(taskParams.value, resTasks));
+    const deleteTask = (resTask: any) => {
+      rResTask.deleteTask([resTask.id], refreshTask);
+    };
 
     expose({
       importAction,
     });
     return {
       drawer,
+      handleActiveMenuAction,
       resInfoStatus,
-      pickedResInfo,
+      defaultActiveMenu,
       resTasks,
       actionType,
       beforeUpload,
+      deleteTask,
     };
   },
 });

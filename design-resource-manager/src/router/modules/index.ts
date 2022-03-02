@@ -127,6 +127,11 @@ const route: Route[] = [
   //   ]
   // },
   {
+    path: "/build",
+    component: () => import(/* webpackChunkName: 'waiting' */ "@/views/build/index.vue"),
+    meta: { }
+  },
+  {
     path: "/waiting",
     component: () => import(/* webpackChunkName: 'waiting' */ "@/views/main/auth_center/waiting.vue"),
     meta: { }

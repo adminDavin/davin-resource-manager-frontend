@@ -36,19 +36,12 @@ const dropForMove = (sourceResInfos: any, resInfo: any, callback: Function) => {
 
 }
 
-const dropForUpload = (files: any, resInfo: any, callback: Function) => {
-  if (files.length > 0) {
-    let resInfoParentPath =
-      resInfo.resInfoType == "file"
-        ? resInfo.resInfoParentPath
-        : resInfo.resInfoPath;
-
-    let upLoadsFiles: any = {};
-
+const dropForUpload = (dataTransfer: any, resInfo: any, callback: Function) => {
+  if (dataTransfer.items.length > 0) {
     let showContent = [
       h("p", null, `资源文件开始上传`),
     ];
-    for (let file of files) {
+    for (let file of dataTransfer.items) {
       showContent.push(h("p", null, `资源文件: ${file.name}`));
     }
     ElNotification({
@@ -57,29 +50,35 @@ const dropForUpload = (files: any, resInfo: any, callback: Function) => {
       duration: 3000
     });
 
-    for (let file of files) {
-      if (file.size > 0) {
-        fo.beforeSimpleUpload(
-          resInfo.resInfoType == "file"
-            ? resInfo.resInfoParentCode
-            : resInfo.resInfoCode,
-          file,
-          (res: any) => {
-            let r = res.data;
-            upLoadsFiles[r.resInfoCode] = {
-              "resInfoName:": r.resInfoName,
-              "resInfoCode:": r.resInfoCode,
-              status: Math.ceil(
-                (r.resTaskStatus / resInfo.partCount) * 100
-              ),
-            };
-            callback();
-          }
-        );
-      }
+    for (let item of dataTransfer.items) {
+      let resInfoParentCode = resInfo.resInfoType == "file"
+        ? resInfo.resInfoParentCode
+        : resInfo.resInfoCode;
+      uploadFolder(resInfoParentCode, item.webkitGetAsEntry(), callback);
     }
   }
 }
 
+const uploadSingleFile = (resInfoParentCode: string, file: File, callback: Function) => {
+  fo.beforeSimpleUpload(resInfoParentCode, file, (res: any) => callback());
+};
+
+const uploadFolder = (resInfoParentCode: string, entry: any, callback: Function) => {
+  console.log('ddd');
+  if (entry.isFile) {
+    entry.file(
+      (file: File) => uploadSingleFile(resInfoParentCode, file, callback),
+      (e: any) => console.log(e)
+    );
+  } else {
+    rResInfo.createFolder(entry.name, resInfoParentCode,
+      (res: any) => {
+        entry.createReader().readEntries(
+          (entries: any) => entries.forEach((et: any) => uploadFolder(res.resInfoCode, et, callback)),
+          (e: any) => console.log(e)
+        );
+      });
+  }
+};
 
 export default { dropForMove, dropForUpload, disableDefaultDrag };

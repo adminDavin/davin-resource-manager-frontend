@@ -11,3 +11,12 @@ body,
 .el-main {
     --el-main-padding: 0px;
 }
+
+.tz-icon-docu {
+    float: left;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-image: url(https://aliyuncdn.babel.cc/img/mdisk/fileIcon5_8.svg);
+}

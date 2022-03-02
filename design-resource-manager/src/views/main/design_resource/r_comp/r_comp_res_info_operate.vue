@@ -1,16 +1,12 @@
 <template>
   <div style="font-size: var(--el-font-size-small)" v-if="item">
     {{ focusOnResInfo }}
-    <el-button
-      type="text"
-      @click.stop="handleSelectedResInfo(item, 'share')"
-      v-if="item.resInfoType == 'file'"
+    <el-button type="text" @click.stop="handleSelectedResInfo(item, 'share')"
       ><el-icon><share /></el-icon
     ></el-button>
     <el-button
       type="text"
       @click.stop="handleSelectedResInfo(item, 'download')"
-      v-if="item.resInfoType == 'file'"
       ><el-icon><download /></el-icon
     ></el-button>
     <el-button

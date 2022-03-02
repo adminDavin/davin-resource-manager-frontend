@@ -1,17 +1,14 @@
 <template>
   <div style="margin: 5px">
-    <el-row>
-      <el-col :sm="24" :md="5" :lg="4"
-        ><r-child-add-res-info-operate ref="childAddResInfoOperate"
-      /></el-col>
-    </el-row>
+    <r-child-add-res-info-operate ref="childAddResInfoOperate"/>
     <el-row style="display: flex">
-      <el-col :sm="24" :md="16" :lg="20">
-        <div style="margin-left: 10px">
+      <el-col :sm="24" :md="16" :lg="19">
+        <div style="margin-left: 10px; display: flex" v-if="selectedResInfo">
+          <el-button type="text" style="margin-top: 5px;margin-right: 20px;" @click="initByParentCode(selectedResInfo.resInfoParentCode)" v-if="selectedResInfo.resInfoParentCode">回到上一步</el-button>
           <r-child-show-breadcrumb-res-info ref="childShowBreadcrumbResInfo" />
         </div>
       </el-col>
-      <el-col :sm="24" :md="8" :lg="4">
+      <el-col :sm="24" :md="8" :lg="5">
         <div style="display: flex; margin-top: 7px">
           <div style="font-size: var(--el-font-size-base); margin-top: 2px">
             已全部加载 共 {{ resInfoTotal }} 个
@@ -28,7 +25,7 @@
 import { defineComponent, provide, Ref, ref } from "vue";
 import rResInfo from "../r_res_info";
 import b_utils from "@/utils/browser_utils";
-import RShowResInfoData from "../r_table_res_info.vue";
+import RShowResInfoData from "../RManagerResInfo.vue";
 import SquaredResInfo from "./SquaredResInfo.vue";
 import AddResInfoOperate from "./AddResInfoOperate.vue";
 import ShowBreadcrumbResInfo from "./ShowBreadcrumbResInfo.vue";
@@ -131,6 +128,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .el-divider--horizontal {
-  margin: 2px 2px;
+  margin: 0px 0px 0px;
 }
 </style>

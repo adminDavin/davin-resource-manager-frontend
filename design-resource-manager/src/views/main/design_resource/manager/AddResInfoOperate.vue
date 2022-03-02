@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-right: 20px; margin-top: 3px">
+  <div style="margin-left: 10px; margin-top: 15px">
     <el-button @click="createResourceAction('file', selectedResInfo.resInfoCode)" type="success" size="small"
       >上传文件</el-button
     >
@@ -52,7 +52,7 @@ export default defineComponent({
       if (!b_utils.isEmpty(inputResInfoPath.value)) {
         rResInfo.createFolder(
           inputResInfoPath.value,
-          selectedResInfo,
+          selectedResInfo.value.resInfoCode,
           (resInfo: any) => refreshResInfos(selectedResInfo.value)
         );
       }

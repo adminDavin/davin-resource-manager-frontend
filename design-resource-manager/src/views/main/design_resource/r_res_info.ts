@@ -4,6 +4,8 @@ const emptyContent = {
   content: {}
 };
 
+const M = 1024 * 1024;
+
 const getHeader = () => {
   let tenantId: any = sessionStorage.getItem('tenantId');
   let userId: any = sessionStorage.getItem('userId');
@@ -14,10 +16,10 @@ const getHeader = () => {
   return headers;
 };
 
-const downloadMultiResInfo = (resInfoCode: string, resInfoSize: number, resInfoName: string, current: number, data: Array<Blob>, downloadProcess: any) => {
+const downloadMultiResInfo = (resInfoCode: string, resInfoSize: number, resInfoName: string, current: number, data: Array<Blob>, callBack: Function) => {
   const headers = getHeader();
-  let l = (resInfoSize - current * 2 * 1024 * 1024) < 3 * 1024 * 1024 ? 3 * 1024 * 1024 : 2 * 1024 * 1024;
-  headers['Range'] = `bytes ${current * 2 * 1024 * 1024}-${l}`;
+  let l = (resInfoSize - current * 2 * M) < 3 * M ? 3 * M : 2 * M;
+  headers['Range'] = `bytes ${current * 2 * M}-${l}`;
   request({
     url: `/download?resInfoCode=${resInfoCode}`,
     method: "post",
@@ -29,14 +31,11 @@ const downloadMultiResInfo = (resInfoCode: string, resInfoSize: number, resInfoN
   })
     .then((res) => {
       data.push(res.data);
-      let total = Math.ceil(resInfoSize / (2 * 1024 * 1024));
-      console.log(total, (current + 1) / total, Math.ceil((current + 1) / total));
-      downloadProcess.value = Math.ceil((current + 1) / total * 100);
+      let total = Math.ceil(resInfoSize / (2 * M));
       if (res.status == 206) {
-        downloadMultiResInfo(resInfoCode, resInfoSize, resInfoName, current + 1, data, downloadProcess);
+        callBack(true);
+        downloadMultiResInfo(resInfoCode, resInfoSize, resInfoName, current + 1, data, callBack);
       } else {
-        console.log(data);
-        downloadProcess.value = 100;
         const blob = new Blob(data);
         const elink = document.createElement('a');
         elink.download = resInfoName;
@@ -46,9 +45,9 @@ const downloadMultiResInfo = (resInfoCode: string, resInfoSize: number, resInfoN
         elink.click();
         URL.revokeObjectURL(elink.href); // 释放URL 对象
         document.body.removeChild(elink);
+        callBack(false);
       }
     });
-
 };
 
 export default {
@@ -102,7 +101,6 @@ export default {
       baseURL: baseUrl,
     })
       .then((res) => {
-        console.log(res);
         rDavin.value = res.data;
       });
   },
@@ -267,14 +265,14 @@ export default {
     })
       .then((res) => callback());
   },
-  downloadResInfo: (resInfoCode: string, resInfoName: string) => {
+  batchDownloadResInfo: (params: any, resInfoName: string) => {
     request({ // 获取仓库信息
-      url: `/download?resInfoCode=${resInfoCode}`,
+      url: `/batch_download`,
       method: "post",
       headers: getHeader(),
       timeout: 240000,
       responseType: 'blob',
-      data: emptyContent,
+      data: {"content": params},
       baseURL: baseUrl,
     })
       .then((res) => {
@@ -288,10 +286,10 @@ export default {
         document.body.removeChild(elink);
       });
   },
-  downloadMultiResInfo: (resInfoCode: string, resInfoSize: number, resInfoName: string, downloadProcess: any) => {
+  downloadMultiResInfo: (resInfoCode: string, resInfoSize: number, resInfoName: string, callBack: Function) => {
     const headers = getHeader();
-    if (resInfoSize > 2 * 1024 * 1024) {
-      headers['Range'] = 'bytes 0-' + 2 * 1024 * 1024;
+    if (resInfoSize > 2 * M) {
+      headers['Range'] = 'bytes 0-' + 2 * M;
     }
     request({ // 获取仓库信息
       url: `/download?resInfoCode=${resInfoCode}`,
@@ -312,11 +310,9 @@ export default {
           elink.click();
           URL.revokeObjectURL(elink.href); // 释放URL 对象
           document.body.removeChild(elink);
-          downloadProcess.value = 100;
+          callBack(false);
         } else {
-          let total = Math.ceil(resInfoSize / (2 * 1024 * 1024));
-          downloadProcess.value = Math.ceil(1 / total * 100);
-          downloadMultiResInfo(resInfoCode, resInfoSize, resInfoName, 1, [res.data], downloadProcess);
+          downloadMultiResInfo(resInfoCode, resInfoSize, resInfoName, 1, [res.data], callBack);
         }
       });
   },
@@ -334,12 +330,10 @@ export default {
         callback(res);
       });
   },
-  createFolder: (resInfoPath: string, selectedResInfo: any, callBack: Function) => {
+  createFolder: (resInfoPath: string, resInfoParentCode: string, callBack: Function) => {
     let rDavin = {
       resInfoPath: resInfoPath,
-      resInfoParentCode: selectedResInfo.value.resInfoCode,
-      ownerType: selectedResInfo.value.resInfoOwnerType,
-      ownerId: selectedResInfo.value.resInfoOwnerId,
+      resInfoParentCode: resInfoParentCode,
     };
     request({ // 获取仓库信息
       url: `/save`,

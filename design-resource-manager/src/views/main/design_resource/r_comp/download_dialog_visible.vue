@@ -20,12 +20,6 @@ export default defineComponent({
         pickedResInfo.value = resInfo;
         downloadDialogVisible.value = true;
         downloadProcess.value = 0;
-        rResInfo.downloadMultiResInfo(
-          resInfo.resInfoCode,
-          resInfo.resInfoSize,
-          resInfo.resInfoName,
-          downloadProcess
-        );
       },
     });
 

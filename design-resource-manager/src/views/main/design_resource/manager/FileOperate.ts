@@ -62,7 +62,7 @@ const beforeSimpleUpload = (resInfoParentCode: string, file: File, callback: Fun
       filename: file.name,
       partCount: Math.ceil(file.size / bytesPerPiece),
       fileSize: file.size,
-      contentType: "application/octet-stream",
+      contentType: file.type,
     },
     (res1: any) => {
       let taskCode = res1.resTask.resTaskCode;

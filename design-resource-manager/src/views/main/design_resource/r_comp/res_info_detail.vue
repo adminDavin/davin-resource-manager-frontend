@@ -14,42 +14,33 @@
       />
     </div>
     <el-descriptions :column="1">
-      <el-descriptions-item label="资源编码">{{
-        pickedResInfo.resInfoCode
-      }}</el-descriptions-item>
-      <el-descriptions-item label="资源名称">{{
-        pickedResInfo.resInfoName
-      }}</el-descriptions-item>
-      <el-descriptions-item label="资源路径">{{
-        pickedResInfo.resInfoPath
-      }}</el-descriptions-item>
+      <el-descriptions-item label="文件名称">
+        <div>{{ pickedResInfo.resInfoName }}</div>
+      </el-descriptions-item>
+      <el-descriptions-item label="文件路径">
+        <r-child-show-breadcrumb-res-info ref="childShowBreadcrumbResInfo" />
+      </el-descriptions-item>
+      <el-descriptions-item label="文件大小">
+        <div>{{ pickedResInfo.size }}</div>
+      </el-descriptions-item>
       <el-descriptions-item label="更新时间"
-        >{{ pickedResInfo.updatedTime }}
-        {{ pickedResInfo.updatedUserId }}
+        ><div>
+          {{ pickedResInfo.updatedTime }}
+          {{ pickedResInfo.updatedUserId }}
+        </div>
       </el-descriptions-item>
     </el-descriptions>
-
-    <div style="font-size: var(--el-font-size-small); text-align: end">
-      <el-button
-        type="text"
-        @click.stop="handleResInfoTagManage(pickedResInfo)"
-        size="small"
-        >标签管理</el-button
-      >
-    </div>
     <div style="font-size: var(--el-font-size-small)">
       <el-button
         type="text"
         @click.stop="handleSelectedResInfo(pickedResInfo, 'share')"
         size="small"
-        v-if="pickedResInfo.resInfoType == 'file'"
         >分享</el-button
       >
       <el-button
         type="text"
         @click.stop="handleSelectedResInfo(pickedResInfo, 'download')"
         size="small"
-        v-if="pickedResInfo.resInfoType == 'file'"
         >下载</el-button
       >
       <el-button
@@ -66,24 +57,35 @@
         v-if="pickedResInfo.resInfoType == 'folder'"
         >进入</el-button
       >
+      <el-button
+        type="text"
+        @click.stop="handleResInfoTagManage(pickedResInfo)"
+        size="small"
+        >设置标签</el-button
+      >
     </div>
   </el-drawer>
 </template>
 <script lang="ts">
 import { defineComponent, inject, ref } from "vue";
 import rResInfo from "../r_res_info";
+import ShowBreadcrumbResInfo from "../manager/ShowBreadcrumbResInfo.vue";
 
 export default defineComponent({
+  components: {
+    "r-child-show-breadcrumb-res-info": ShowBreadcrumbResInfo,
+  },
   setup(props, context) {
     const { expose } = context;
     const pickedResInfo = ref();
     const resInfoDetalDrawer = ref(false);
     const shareResInfoDesc = ref();
-    const tempHandleSelectedResInfo: any = inject("handleSelectedResInfo");
+    const childShowBreadcrumbResInfo = ref();
+    const superHandleSelectedResInfo: any = inject("handleSelectedResInfo");
     const tempHandleResInfoTagManage: any = inject("handleResInfoTagManage");
-    
     const handleSelectedResInfo = (resInfo: any, action: string) => {
-      tempHandleSelectedResInfo(resInfo, action);
+      resInfoDetalDrawer.value = false;
+      superHandleSelectedResInfo(resInfo, action);
     };
     const handleResInfoTagManage = (resInfo: any) => {
       tempHandleResInfoTagManage(resInfo);
@@ -93,6 +95,9 @@ export default defineComponent({
       initPickedResInfo: (resInfo: any) => {
         pickedResInfo.value = resInfo;
         resInfoDetalDrawer.value = true;
+        rResInfo.getAllParent(resInfo.resInfoParentCode, (res: any) =>
+          childShowBreadcrumbResInfo.value.initAllParentResInfo(res.data)
+        );
       },
     });
 
@@ -100,6 +105,7 @@ export default defineComponent({
       pickedResInfo,
       resInfoDetalDrawer,
       shareResInfoDesc,
+      childShowBreadcrumbResInfo,
       handleSelectedResInfo,
       handleResInfoTagManage,
     };

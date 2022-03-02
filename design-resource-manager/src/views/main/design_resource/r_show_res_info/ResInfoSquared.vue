@@ -1,29 +1,26 @@
 <template>
   <div>
-    <div style="margin: 0px 5px 0px 5px">
+    <div style="margin: 0px 5px 0px 5px; background-color: floralwhite">
       <el-checkbox
         v-model="allSelectedFlag"
         @click="handleBatchOperate('allSelected')"
       />
-      <el-button type="text" style="margin-bottom: 8px; margin-left: 10px"
+      <el-button type="text" style="margin-bottom: 2px; margin-left: 10px"
         >已选择{{ data.filter((item) => item.selected).length }}个</el-button
       >
-      <el-button
-        size="small"
-        style="margin-bottom: 8px"
-        @click="handleBatchOperate('moveSelected')"
+      <el-button size="small" @click="handleBatchOperate('moveSelected')"
         >移动</el-button
       >
-      <el-button
-        size="small"
-        style="margin-bottom: 8px"
-        @click="handleBatchOperate('deleteSelected')"
+      <el-button size="small" @click="handleBatchOperate('download')"
+        >下载</el-button
+      >
+      <el-button size="small" @click="handleBatchOperate('shareSelected')"
+        >分享</el-button
+      >
+      <el-button size="small" @click="handleBatchOperate('deleteSelected')"
         >删除</el-button
       >
-      <el-button
-        size="small"
-        style="margin-bottom: 8px"
-        @click="handleBatchOperate('tagManageSelected')"
+      <el-button size="small" @click="handleBatchOperate('tagManageSelected')"
         >设置标签</el-button
       >
       <dialog-show-all-folder ref="dialogShowAllFolder" />
@@ -45,7 +42,7 @@
         </el-card>
       </el-col>
       <el-col
-        :sm="12"
+        :sm="8"
         :md="6"
         :lg="3"
         v-for="(item, index) in data"
@@ -78,12 +75,18 @@
                   <r-res-info-operate :item="item" />
                 </div>
               </div>
-              <el-image
-                draggable="false"
-                fit="scale-down"
-                style="width: 50%"
-                :src="item.image"
-              />
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <text
+                  class="tz-icon-docu"
+                  :style="getResInfoStyle(item, [76, 76])"
+                ></text>
+              </div>
             </div>
             <el-tooltip :content="item.resInfoName" placement="bottom">
               <el-button type="text" style="overflow: hidden">{{
@@ -97,12 +100,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, inject, onMounted, provide, Ref, ref } from "vue";
+import { defineComponent, inject, onMounted, Ref, ref } from "vue";
 import RResInfoOperate from "../r_comp/r_comp_res_info_operate.vue";
 import dh from "./DragActionHandle";
 import DialogShowAllFolder from "./DialogShowAllFolder.vue";
-import { ElNotification } from "element-plus";
-import rResInfo from "../r_res_info";
+import DocuIcon from "../DocuIcon";
+import { batchCommonOperate } from "./BatchOperateResInfo";
 
 export default defineComponent({
   components: {
@@ -136,7 +139,7 @@ export default defineComponent({
             refreshResInfos()
           );
         } else {
-          dh.dropForUpload(event.dataTransfer.files, resInfo, () => {
+          dh.dropForUpload(event.dataTransfer, resInfo, () => {
             refreshResInfos();
             handleTransmissionDialog("show", pResInfo.value.resInfoCode);
           });
@@ -150,42 +153,24 @@ export default defineComponent({
     };
 
     const handleBatchOperate = (action: string) => {
-      if ("allSelected" == action) {
-        for (let item of data.value) {
-          item.selected = !allSelectedFlag.value;
-        }
-      } else if ("moveSelected" == action) {
-        let seletedData = data.value.filter((item) => item.selected);
-        if (seletedData.length > 0) {
-          dialogShowAllFolder.value?.init(seletedData);
+      batchCommonOperate(action, data, allSelectedFlag.value, (sData: any) => {
+        if ("tagManageSelected" == action) {
+        } else if ("download" == action) {
+          handleTransmissionDialog("download", pResInfo.value.resInfoCode);
+        } else if ("moveSelected" == action) {
+          dialogShowAllFolder.value?.init(sData);
+          refreshResInfos();
         } else {
-          ElNotification({
-            message: "请选择文件",
-            type: "warning",
-            duration: 3000,
-          });
+          refreshResInfos();
         }
-      } else if ("deleteSelected" == action) {
-        let seletedData = data.value.filter((item) => item.selected);
-        if (seletedData.length == 0) {
-          ElNotification({
-            message: "请选择文件",
-            type: "warning",
-            duration: 3000,
-          });
-        } else {
-          for (let item of seletedData) {
-            rResInfo.delete(item.resInfoCode, () => refreshResInfos());
-          }
-        }
-      } else if ("tagManageSelected" == action) {
-        let seletedData = data.value.filter((item) => item.selected);
-      }
+        
+      });
     };
 
     const handleUploadResource = () => {
       handleTransmissionDialog("create", pResInfo.value.resInfoCode);
     };
+    
     onMounted(() => dh.disableDefaultDrag(document.querySelector("body")));
     expose({
       initData: (d: any, temPResInfo: any) => (
@@ -195,6 +180,7 @@ export default defineComponent({
     return {
       data,
       onDrag,
+      getResInfoStyle: DocuIcon.getResInfoStyle,
       allSelectedFlag,
       handleSelectedResInfo,
       handleClickResInfo,
