@@ -5,7 +5,6 @@ const showOperate = (resInfo: any, pickedResInfo: any) => {
 }
 
 const singleCommonOperate = (action: string, resInfo: any, pickedResInfo: any, router: any, callback: Function) => {
-  console.log(action);
   switch (action) {
     case "enter":
       pickedResInfo.value = resInfo;

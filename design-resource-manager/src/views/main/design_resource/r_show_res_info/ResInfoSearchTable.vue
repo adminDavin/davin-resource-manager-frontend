@@ -1,29 +1,30 @@
 <template>
   <div>
-    <div style="margin: 0px 5px 0px 5px; background-color: floralwhite">
+    
+    <div style="padding-top: 8px; padding-left: 20px; background-color: floralwhite">
       <el-checkbox
         v-model="allSelectedFlag"
-        @click="handleBatchOperate('allSelected')"
+        size="small"
+        @change="handleBatchOperate('allSelected')"
       />
-      <el-button type="text" style="margin-bottom: 2px; margin-left: 10px"
+      <el-button type="text" style="margin-bottom: 6px; margin-left: 10px"
         >已选择{{ data.filter((item) => item.selected).length }}个</el-button
       >
-      <el-button size="small" @click="handleBatchOperate('moveSelected')"
+      <el-button size="small" style="margin-bottom: 6px;" @click="handleBatchOperate('moveSelected')"
         >移动</el-button
       >
-      <el-button size="small" @click="handleBatchOperate('download')"
+      <el-button size="small" style="margin-bottom: 6px;" @click="handleBatchOperate('download')"
         >下载</el-button
       >
-      <el-button size="small" @click="handleBatchOperate('shareSelected')"
+      <el-button size="small" style="margin-bottom: 6px;" @click="handleBatchOperate('shareSelected')"
         >分享</el-button
       >
-      <el-button size="small" @click="handleBatchOperate('deleteSelected')"
+      <el-button size="small" style="margin-bottom: 6px;" @click="handleBatchOperate('deleteSelected')"
         >删除</el-button
       >
-      <el-button size="small" @click="handleBatchOperate('tagManageSelected')"
+      <el-button size="small" style="margin-bottom: 6px;" @click="handleBatchOperate('tagManageSelected')"
         >设置标签</el-button
       >
-      <dialog-show-all-folder ref="dialogShowAllFolder" />
     </div>
     <el-table :data="data" @row-dblclick="handleClickResInfo">
       <el-table-column label="文件名称" prop="resInfoName" sortable>
@@ -42,7 +43,14 @@
               class="ml20r10"
               @click.stop=""
             />
+            <el-image
+              style="width: 55px; height: 55px"
+              v-if="props.row.preImageSrc"
+              :src="props.row.preImageSrc"
+              :preview-src-list="[props.row.preImageSrc]"
+            ></el-image>
             <text
+              v-else
               class="tz-icon-docu"
               :style="getResInfoStyle(props.row, [55, 55])"
             ></text>
@@ -89,13 +97,11 @@ import { defineComponent, inject, onMounted, Ref, ref } from "vue";
 import dh from "./DragActionHandle";
 import RResInfoOperate from "../r_comp/r_comp_res_info_operate.vue";
 import DocuIcon from "../DocuIcon";
-import DialogShowAllFolder from "./DialogShowAllFolder.vue";
 import { batchCommonOperate } from "./BatchOperateResInfo";
 
 export default defineComponent({
   components: {
     "r-res-info-operate": RResInfoOperate,
-    "dialog-show-all-folder": DialogShowAllFolder,
   },
 
   setup(props, context) {
@@ -104,6 +110,7 @@ export default defineComponent({
     const handleClickResInfo: any = inject("handleClickResInfo");
     const refreshResInfos: any = inject("refreshResInfos");
     const handleTransmissionDialog: any = inject("handleTransmissionDialog");
+    const handleBatchResInfo: any = inject("handleBatchResInfo");
 
     const data: Ref<any[]> = ref([]);
     const pResInfo = ref();
@@ -137,14 +144,13 @@ export default defineComponent({
     };
 
     const handleBatchOperate = (action: string) => {
-      batchCommonOperate(action, data, allSelectedFlag.value, (sData: any) => {
-        if ("tagManageSelected" == action) {
-        } else if ("download" == action) {
-          handleTransmissionDialog("download", pResInfo.value.resInfoCode);
-        } else {
-          refreshResInfos();
+      if (action == "allSelected") {
+        for (let item of data.value) {
+          item.selected = allSelectedFlag.value;
         }
-      });
+      } else {
+        handleBatchResInfo(action, data);
+      }
     };
 
     const handleUploadResource = () =>

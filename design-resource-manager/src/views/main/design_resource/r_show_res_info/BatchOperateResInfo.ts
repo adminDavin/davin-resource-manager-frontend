@@ -31,13 +31,8 @@ const downloadSelected = (data: any, callBack: Function) => {
 };
 
 
-const batchCommonOperate = (action: string, data: any, allSelectedFlag: boolean, callBack: Function) => {
+const batchCommonOperate = (action: string, data: any, callBack: Function) => {
   switch (action) {
-    case "allSelected":
-      for (let item of data.value) {
-        item.selected = !allSelectedFlag;
-      }
-      break;
     case "deleteSelected":
       notifyNoSelected(getSelected(data), (sData: any) => {
         for (let item of sData) {

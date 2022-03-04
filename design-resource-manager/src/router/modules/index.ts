@@ -42,16 +42,6 @@ const route: Route[] = [
         meta: { }
       },
       {
-        path: "excel",
-        component: () => import(/* webpackChunkName: 'res_preview_excel' */ "@/views/main/res_preview/excel/index.vue"),
-        meta: { }
-      },
-      {
-        path: "ppt",
-        component: () => import(/* webpackChunkName: 'res_preview_ppt' */ "@/views/main/res_preview/ppt/index.vue"),
-        meta: { }
-      },
-      {
         path: "text",
         component: () => import(/* webpackChunkName: 'res_preview_ppt' */ "@/views/main/res_preview/text/index.vue"),
         meta: { }
@@ -59,6 +49,11 @@ const route: Route[] = [
       {
         path: "pdf",
         component: () => import(/* webpackChunkName: 'res_preview_ppt' */ "@/views/main/res_preview/pdf/index.vue"),
+        meta: { }
+      },
+      {
+        path: "dxf",
+        component: () => import(/* webpackChunkName: 'res_preview_ppt' */ "@/views/main/res_preview/dxf/index.vue"),
         meta: { }
       },
       {

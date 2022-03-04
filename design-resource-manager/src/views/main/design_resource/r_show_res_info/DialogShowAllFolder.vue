@@ -82,6 +82,7 @@ export default defineComponent({
     const handleDbClickFolder = (resInfo: any) => {
       if (sResInfoCodes.value.indexOf(resInfo.resInfoCode) < 0) {
         initByParentCode(resInfo.resInfoCode);
+        refreshResInfos();
       } else {
         ElNotification({
           message: "不能将文件自己移动到自己内部",

@@ -68,11 +68,11 @@ export default {
   },
   deleteTask: (taskIds: any, callback: Function) => {
     request({ // 获取仓库信息
-      url: `/res_task/list`,
+      url: `/res_task/delete`,
       method: "post",
       headers: getHeader(),
       data: {
-        content: taskIds
+        content: { taskIds }
       },
       baseURL: baseUrl,
     })

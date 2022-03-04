@@ -1,5 +1,13 @@
 <template>
-  <div ref="graph"></div>
+  <!-- <div ref="graph" style="margin: 20px; display: block">
+    <el-icon><warning /></el-icon>
+  </div> -->
+  <div class="center">
+    <div class="center_text">
+      <el-icon :size="120" :color="`red`"><warning /></el-icon>
+      <div><strong style="font-size: 30px">文件暂不支持预览</strong></div>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
@@ -24,11 +32,10 @@ export default defineComponent({
         })),
     };
     onMounted(() => {
-      ForceGraph3D({
-        controlType: "trackball",
-        rendererConfig: { antialias: true, alpha: true },
-      })(graph.value).graphData(gData);
-      
+      // ForceGraph3D({
+      //   controlType: "trackball",
+      //   rendererConfig: { antialias: true, alpha: true },
+      // })(graph.value).graphData(gData);
     });
     return {
       graph,
@@ -36,3 +43,16 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.center {
+  display: table;
+  width: 100%;
+  margin-top: 100px;
+}
+.center_text {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+</style>

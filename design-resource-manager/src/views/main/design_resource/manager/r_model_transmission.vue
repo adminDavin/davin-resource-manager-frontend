@@ -54,7 +54,9 @@
                   font-weight: bolder;
                 "
               >
-                <el-button size="small" @click="deleteTask(item)" type="text">删除记录</el-button>
+                <el-button size="small" @click="deleteTask(item)" type="text"
+                  >删除记录</el-button
+                >
               </div>
             </div>
             <el-progress
@@ -126,7 +128,9 @@ export default defineComponent({
     };
 
     const deleteTask = (resTask: any) => {
-      rResTask.deleteTask([resTask.id], refreshTask);
+      rResTask.deleteTask([resTask.id], () => {
+        refreshTask(taskParams.value);
+      });
     };
 
     expose({

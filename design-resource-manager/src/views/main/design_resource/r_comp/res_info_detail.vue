@@ -59,7 +59,7 @@
       >
       <el-button
         type="text"
-        @click.stop="handleResInfoTagManage(pickedResInfo)"
+        @click.stop="handleSelectedResInfo(pickedResInfo, 'resTagSetting')"
         size="small"
         >设置标签</el-button
       >
@@ -82,15 +82,10 @@ export default defineComponent({
     const shareResInfoDesc = ref();
     const childShowBreadcrumbResInfo = ref();
     const superHandleSelectedResInfo: any = inject("handleSelectedResInfo");
-    const tempHandleResInfoTagManage: any = inject("handleResInfoTagManage");
     const handleSelectedResInfo = (resInfo: any, action: string) => {
       resInfoDetalDrawer.value = false;
       superHandleSelectedResInfo(resInfo, action);
     };
-    const handleResInfoTagManage = (resInfo: any) => {
-      tempHandleResInfoTagManage(resInfo);
-    };
-
     expose({
       initPickedResInfo: (resInfo: any) => {
         pickedResInfo.value = resInfo;
@@ -107,7 +102,6 @@ export default defineComponent({
       shareResInfoDesc,
       childShowBreadcrumbResInfo,
       handleSelectedResInfo,
-      handleResInfoTagManage,
     };
   },
 });

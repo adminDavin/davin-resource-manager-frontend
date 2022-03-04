@@ -61,16 +61,13 @@ export default defineComponent({
     const resInfoTotal = ref(0);
     const childShowBreadcrumbResInfo: Ref = ref();
 
-    const handleClickResInfo = (row: any, column: any, event: any) => {
-      selectedResInfo.value = row;
-      rResInfo.listResTag(row.resInfoCode, (res) => (resTags.value = res));
-    };
     const initShowResInfoData = (filters: any) => {
       rResInfo.getSearchResInfos(filters, (res: any) => {
         resInfoTotal.value = res.list.length;
         childShowResInfoData.value.initTableData(res.list, null);
       });
     };
+    
     const refreshSearchResInfo = (filters: any) => {
       initShowResInfoData(filters);
     };
@@ -99,6 +96,8 @@ export default defineComponent({
       // );
     };
 
+
+    provide("initByParentCode", (parentCode: string) => {});
     provide("handleDropdown", (dropdownItem: any) =>
       initShowSortedResInfoData(dropdownItem, "desc")
     );
@@ -115,7 +114,6 @@ export default defineComponent({
       resTags,
       childShowResInfoData,
       childShowBreadcrumbResInfo,
-      handleClickResInfo,
       handleToRootResInfo,
       getResourceType: d_const.getResourceType,
       bUtils: b_utils,

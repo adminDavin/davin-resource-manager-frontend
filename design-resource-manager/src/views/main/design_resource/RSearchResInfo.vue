@@ -7,8 +7,9 @@
   </div>
   <r-child-tag-dialog ref="rChildTagDialog" />
   <r-child-share-dialog ref="rChildShareDialog" />
-  <r-child-download-dialog ref="rChildDownloadDialog" />
+  <r-child-restag-setting-dialog ref="rChildResTagSettingDialog" />
   <r-child-res-info-detail-drawer ref="rChildResInfoDetailDrawer" />
+  <dialog-show-all-folder ref="dialogShowAllFolder" />
 </template>
 <script lang="ts">
 import { defineComponent, inject, onMounted, provide, Ref, ref } from "vue";
@@ -17,12 +18,15 @@ import { fixedData } from "./ResInfoDataFixed";
 
 import RChildTagDialog from "./r_comp/tag_dialog_visible.vue";
 import RChildShareDialog from "./r_comp/share_dialog_visible.vue";
-import RChildDownloadDialog from "./r_comp/download_dialog_visible.vue";
+import RChildResTagSettingDialog from "./r_comp/DialogResTagSetting.vue";
+import DialogShowAllFolder from "./r_show_res_info/DialogShowAllFolder.vue";
+
 import RChildResInfoDetailDrawer from "./r_comp/res_info_detail.vue";
 import RResInfoOperate from "./r_comp/r_comp_res_info_operate.vue";
 import ResInfoSquared from "./r_show_res_info/ResInfoSearchSquared.vue";
 import ResInfoTable from "./r_show_res_info/ResInfoSearchTable.vue";
 import { singleCommonOperate } from "./r_show_res_info/SingleOperateResInfo";
+import { batchCommonOperate } from "./r_show_res_info/BatchOperateResInfo";
 
 export default defineComponent({
   components: {
@@ -31,7 +35,8 @@ export default defineComponent({
     "r-res-info-operate": RResInfoOperate,
     "r-child-tag-dialog": RChildTagDialog,
     "r-child-share-dialog": RChildShareDialog,
-    "r-child-download-dialog": RChildDownloadDialog,
+    "dialog-show-all-folder": DialogShowAllFolder,
+    "r-child-restag-setting-dialog": RChildResTagSettingDialog,
     "r-child-res-info-detail-drawer": RChildResInfoDetailDrawer,
   },
   props: {
@@ -42,18 +47,19 @@ export default defineComponent({
     const { expose } = context;
     const changeSelectedInfo: any = inject("changeSelectedInfo");
     const handleTransmissionDialog: any = inject("handleTransmissionDialog");
+    const refreshResInfos: any = inject("refreshResInfos");
     const parentResInfo = ref();
     const tableData = ref();
 
     const isSquared = ref();
     const pickedResInfo = ref();
-    const focusOnResInfo = ref();
 
     const resInfoSquared: Ref = ref();
     const resInfoTable: Ref = ref();
     const rChildTagDialog: Ref = ref();
     const rChildShareDialog: Ref = ref();
-    const rChildDownloadDialog: Ref = ref();
+    const rChildResTagSettingDialog: Ref = ref();
+    const dialogShowAllFolder: Ref = ref();
     const rChildResInfoDetailDrawer: Ref = ref();
 
     const initTableData = (resInfoData: any, parentRInfo: any) => {
@@ -62,41 +68,6 @@ export default defineComponent({
       resInfoSquared.value?.initData(resInfoData, parentRInfo);
       resInfoTable.value?.initData(resInfoData, parentRInfo);
       parentResInfo.value = parentRInfo;
-    };
-
-    const handleClickResInfo = (resInfo: any, column: any, event: any) => {
-      pickedResInfo.value = resInfo;
-      if (resInfo.resInfoType == "folder") {
-        changeSelectedInfo(resInfo, "enter");
-      }
-    };
-
-    const handleSelectedResInfo = (resInfo: any, action: string) => {
-      singleCommonOperate(
-        action,
-        resInfo,
-        pickedResInfo,
-        router,
-        (res: any) => {
-          if (action == "enter") {
-            changeSelectedInfo(resInfo, "enter");
-          } else if (action == "detail") {
-            rChildResInfoDetailDrawer.value?.initPickedResInfo(res);
-          } else if (action == "download") {
-            handleTransmissionDialog("download", resInfo.resInfoCode);
-          } else if (action == "share") {
-            rChildShareDialog.value?.initPickedResInfo(res);
-          }
-        }
-      );
-    };
-
-    const handleOnResInfo = (resInfo: any, action: string, event) => {
-      focusOnResInfo.value = resInfo;
-    };
-
-    const handleResInfoTagManage = (resInfo: any) => {
-      rChildTagDialog.value?.initPickedResInfo(resInfo);
     };
 
     onMounted(() => {
@@ -110,29 +81,63 @@ export default defineComponent({
     expose({
       initTableData,
       initRefreshShowFlag: (squared: string) => (isSquared.value = squared),
-      handleResInfoTagManage,
     });
-    provide("handleClickResInfo", handleClickResInfo);
-    provide("handleResInfoTagManage", handleResInfoTagManage);
-    provide("handleSelectedResInfo", handleSelectedResInfo);
+
+    provide("handleClickResInfo", (resInfo: any) => {
+      pickedResInfo.value = resInfo;
+      if (resInfo.resInfoType == "folder") {
+        changeSelectedInfo(resInfo, "enter");
+      }
+    });
+
+    provide("handleSelectedResInfo", (resInfo: any, action: string) => {
+      singleCommonOperate(
+        action,
+        resInfo,
+        pickedResInfo,
+        router,
+        (res: any) => {
+          if (action == "enter") {
+            pickedResInfo.value = resInfo;
+            changeSelectedInfo(resInfo, "enter");
+          } else if (action == "detail") {
+            rChildResInfoDetailDrawer.value?.initPickedResInfo(res);
+          } else if (action == "download") {
+            handleTransmissionDialog("download", resInfo.resInfoCode);
+          } else if (action == "share") {
+            rChildShareDialog.value?.initPickedResInfo(res);
+          } else if ("resTagSetting" == action) {
+            rChildTagDialog.value?.initPickedResInfo(resInfo);
+          }
+        }
+      );
+    });
+
+    provide("handleBatchResInfo", (action: string, data: any) => {
+      batchCommonOperate(action, data, (sData: any) => {
+        if ("tagManageSelected" == action) {
+          // rChildResTagSettingDialog.value?.initResInfos(sData);
+          rChildTagDialog.value?.initPickedResInfo(sData[0]);
+        } else if ("download" == action) {
+          handleTransmissionDialog("download", parentResInfo.value.resInfoCode);
+        } else if ("moveSelected" == action) {
+          dialogShowAllFolder.value?.init(sData);
+        } else if ("deleteSelected" == action) {
+          refreshResInfos();
+        }
+      });
+    });
 
     return {
       tableData,
-      parentResInfo,
-      pickedResInfo,
       isSquared,
-      focusOnResInfo,
-
       resInfoSquared,
       resInfoTable,
       rChildTagDialog,
       rChildShareDialog,
-      rChildDownloadDialog,
+      rChildResTagSettingDialog,
+      dialogShowAllFolder,
       rChildResInfoDetailDrawer,
-      handleSelectedResInfo,
-      handleOnResInfo,
-      handleClickResInfo,
-      handleResInfoTagManage,
     };
   },
 });

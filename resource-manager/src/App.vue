@@ -22,7 +22,7 @@ export default defineComponent({
   },
   setup() {
     let scrollerHeight = computed(() => {
-      return window.innerHeight - 10 + "px";
+      return (window.innerHeight - 10 < 800? 800: window.innerHeight - 10) + "px";
     });
     return {
       locale: zhCn,

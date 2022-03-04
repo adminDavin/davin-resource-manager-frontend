@@ -3,21 +3,21 @@
     <el-tab-pane name="design_resource">
       <template #label>
         <strong :style="`font-size: var(--el-font-size-large)`"
-          >我的云存储空间</strong
+          >个人云盘</strong
         >
       </template>
     </el-tab-pane>
     <el-tab-pane name="design_resource/group">
       <template #label>
         <strong :style="`font-size: var(--el-font-size-large)`"
-          >团队云存储空间</strong
+          >素材库</strong
         >
       </template>
     </el-tab-pane>
     <el-tab-pane name="design_resource/public">
       <template #label>
         <strong :style="`font-size: var(--el-font-size-large)`"
-          >开放云存储空间</strong
+          >项目库</strong
         >
       </template>
     </el-tab-pane>
