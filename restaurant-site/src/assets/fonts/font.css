@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "NotoSerifJP-Black";
+    src: url('NotoSerifJP-Black.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "NotoSansJP-Regular";
+    src: url('NotoSansJP-Regular.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Parisienne-Regular";
+    src: url('Parisienne-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

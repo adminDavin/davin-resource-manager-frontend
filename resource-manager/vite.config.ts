@@ -34,13 +34,6 @@ export default defineConfig({
   // })
   ],
   build: {
-    // terserOptions:{
-    //     compress:{
-    //         drop_console:true // 移除console 再生产环境
-    //     }
-    // },
-    // outDir:'public',
-    // assetsDir: "static",
     rollupOptions: {
       output: {
         manualChunks(id) { // 分包

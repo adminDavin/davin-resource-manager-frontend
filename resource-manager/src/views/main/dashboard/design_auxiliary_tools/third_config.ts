@@ -21,13 +21,13 @@ const auxiliaryTools = {
   tZero: [{
     title: "智能地库系统",
     logo: tZeroTotalGraph,
-    url: "https://www.to0-ai.com",
+    url: "https://to0-ai.com",
     desc: "地库排布优化",
     style: "background-color:rgb(128,152,166);"
   }, {
     title: "智能投决系统",
     logo: tZeroParkingDesign,
-    url: "https://www.to0-ai.com",
+    url: "https://to0-ai.com",
     desc: "智能投决系统",
     style: "background-color:rgb(128,166,144);"
   }, {

@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('iconfont.ttf?t=1646823182381') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-location:before {
+  content: "\e651";
+}
+
+.icon-tongzhi:before {
+  content: "\e759";
+}
+
+.icon-homepage:before {
+  content: "\e609";
+}
+
+.icon-menu:before {
+  content: "\e7f4";
+}
+
+.icon-yuyue:before {
+  content: "\e60d";
+}
+
+.icon-Online-shopping:before {
+  content: "\e82d";
+}
+
+.icon-shop-home:before {
+  content: "\e60a";
+}
+
