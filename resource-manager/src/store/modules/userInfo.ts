@@ -2,7 +2,7 @@ import { ActionContext } from 'vuex'
 
 export interface userState {
   token: string,
-  info: object,
+  info: any,
   authorization: string
   tokenInfo: any,
 }
@@ -27,12 +27,19 @@ const mutations = {
     state.authorization = `${token['token_type']} ${token['access_token']}`
     state.token = token['access_token']
   },
-  infoChange(state: userState, res: any) {
+  userInfoChange(state: userState, res: any) {
     sessionStorage.setItem("userId", res.id);
     sessionStorage.setItem("identifyId", res.identifyId);
     sessionStorage.setItem("tenantId", res.tenantId);
     sessionStorage.setItem("token", res.id);
     state.info = res
+  },
+  loginOutChange(state: userState, res: any) {
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("identifyId");
+    sessionStorage.removeItem("tenantId");
+    sessionStorage.removeItem("token");
+    state.info = null;
   }
 }
 
@@ -40,7 +47,12 @@ const mutations = {
 const actions = {
   storeUserInfo({ commit }: ActionContext<userState, userState>, params: any) {
     return new Promise((resolve, reject) => {
-      commit('infoChange', params)
+      commit('userInfoChange', params)
+    })
+  },
+  loginOut({ commit }: ActionContext<userState, userState>, params: any) {
+    return new Promise((resolve, reject) => {
+      commit('loginOutChange', params)
     })
   },
 }

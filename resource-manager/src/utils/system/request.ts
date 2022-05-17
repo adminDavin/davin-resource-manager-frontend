@@ -12,7 +12,7 @@ const service: AxiosInstance = axios.create({
 // 请求前的统一处理
 service.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    console.log(store.getters['user/token'])
+    // console.log(store.getters['user/token'])
     // JWT鉴权处理
     // if (store.getters['user/token']) {
     //   config.headers['Authorization'] = store.state.user.authorization
@@ -28,7 +28,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const res = response.data;
-    console.log(res);
+    // console.log(res);
     if (res.status === 200 || res.access_token != undefined) {
       return res
     } else {

@@ -32,7 +32,7 @@ router.beforeEach((to, _from, next) => {
       if (to.path == whiteList[0]) { // 当前已经是即将跳转至登录页面 不做跳转处理
         next();
       } else { // 没有登录且请求参数中不包含code的情况下 默认跳转至登录页面
-        next("/login");
+        next("/login?redirect=/template_info");
       }
     } else { // 请求路径中包含code的情况 
       if (to.path == whiteList[1]) { // 当前即将跳转至登录过度页面 不做跳转处理
@@ -44,15 +44,15 @@ router.beforeEach((to, _from, next) => {
   }
 });
 
-// // 路由跳转后的监听操作
+// 路由跳转后的监听操作
 // router.afterEach((to, _from) => {
 //   console.log("router jump finished", to, _from);
-//   // const keepAliveComponentsName = store.getters['keepAlive/keepAliveComponentsName'] || []
-//   // const name = to.matched[to.matched.length - 1].components.default.name
-//   // if (to.meta && to.meta.cache && name && !keepAliveComponentsName.includes(name)) {
-//   //   store.commit('keepAlive/addKeepAliveComponentsName', name)
-//   // }
-//   // NProgress.done();
+//   const keepAliveComponentsName = store.getters['keepAlive/keepAliveComponentsName'] || []
+//   const name = to.matched[to.matched.length - 1].components.default.name
+//   if (to.meta && to.meta.cache && name && !keepAliveComponentsName.includes(name)) {
+//     store.commit('keepAlive/addKeepAliveComponentsName', name)
+//   }
+//   NProgress.done();
 // });
 
 export default router;

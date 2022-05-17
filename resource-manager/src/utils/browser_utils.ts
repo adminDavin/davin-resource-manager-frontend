@@ -12,6 +12,7 @@ export default {
             baseURL,
             method: "post",
             data,
+            headers: {}
         }
     },
     isWx: () => {

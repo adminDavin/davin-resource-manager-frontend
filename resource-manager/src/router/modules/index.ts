@@ -9,6 +9,16 @@ const route: Route[] = [
     meta: {},
   },
   {
+    path: "/login",
+    component: () => import(/* webpackChunkName: 'auth_center' */ "@/views/main/auth_center/index.vue"),
+    meta: { }
+  },
+  {
+    path: "/waiting",
+    component: () => import(/* webpackChunkName: 'waiting' */ "@/views/main/auth_center/waiting.vue"),
+    meta: { }
+  }, 
+  {
     path: "/dashboard",
     redirect: '/dashboard/design_news',
     component: () => import(/* webpackChunkName: 'dashboard' */ "@/views/main/dashboard/index.vue"),
@@ -33,13 +43,8 @@ const route: Route[] = [
     ]
   },
   {
-    path: "/waiting",
-    component: () => import(/* webpackChunkName: 'waiting' */ "@/views/main/auth_center/waiting.vue"),
-    meta: { }
-  }
-  , {
-    path: "/login",
-    component: () => import(/* webpackChunkName: 'auth_center' */ "@/views/main/auth_center/index.vue"),
+    path: "/template_info",
+    component: () => import(/* webpackChunkName: 'template_info' */ "@/views/main/template_info/index.vue"),
     meta: { }
   }
 ]

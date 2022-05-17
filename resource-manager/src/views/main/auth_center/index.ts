@@ -1,7 +1,20 @@
 
-import {publicKey} from '@/config/index';
+import { publicKey } from '@/config/index';
 import md5 from 'js-md5';
 import JSEncrypt from 'jsencrypt';
+import { wxConf } from "@/config";
+
+const wecomUrl = `${wxConf.codeScanningLoginUrl}?appid=${
+  wxConf.corpid
+}&agentid=${wxConf.agentid}&redirect_uri=${encodeURI(
+  wxConf.redirectUri
+)}&state=STATE`;
+const autoWecomUrl = `${wxConf.authorizedLoginUrl}?appid=${
+  wxConf.corpid
+}&redirect_uri=${encodeURI(
+  wxConf.redirectUri
+)}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect`;
+
 
 const loginTypes = [
   {
@@ -49,13 +62,27 @@ const isPhone = (loginType: any) => {
 
 // md5加密
 const encryptorPassword = (password: string) => {
-  let encryptor = new JSEncrypt();  
+  let encryptor = new JSEncrypt();
   encryptor.setPublicKey(publicKey);
   return encryptor.encrypt(md5(password));
 };
 
-export { 
+const getLoginType = (selectedLoginType: string, tempLoginType: any) => {
+  let sLoginType: any = null;
+  for (let item of tempLoginType) {
+    item.type = selectedLoginType == item.key ? "primary" : "info";
+    if (selectedLoginType == item.key) {
+      sLoginType = item;
+    }
+  }
+  return sLoginType;
+}
+
+export {
+  wecomUrl,
+  autoWecomUrl,
   loginTypes,
   isPhone,
+  getLoginType,
   encryptorPassword
 }

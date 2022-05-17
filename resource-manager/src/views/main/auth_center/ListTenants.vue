@@ -32,20 +32,22 @@ export default defineComponent({
     const identifyId = ref();
     const store = useStore();
     const tenants = ref<any[]>([]);
+    const redirect = ref('/');
     const dialogTableVisible = ref(false);
 
     const chooseTenant = (item: any) => {
       apiUserAuth.getUserInfo(identifyId.value, item.id, (res: any) => {
         store.dispatch("userInfo/storeUserInfo", res);
         dialogTableVisible.value = false;
-        router.push({ path: "/" });
+        router.push({ path: redirect.value });
       });
     };
 
     expose({
-      init: (orginIdentifyId: number, res: any) => {
+      init: (orginIdentifyId: number, res: any, tempRedirect: string) => {
         identifyId.value = orginIdentifyId;
         tenants.value = res;
+        redirect.value = tempRedirect;
         if (res.length == 1) {
           chooseTenant(tenants.value[0]);
         } else {

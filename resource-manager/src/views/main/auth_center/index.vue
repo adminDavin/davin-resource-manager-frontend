@@ -27,10 +27,7 @@
             <el-row justify="center">
               <el-col :xs="22" :sm="18" :md="14">
                 <div style="padding-top: 50px">
-                  <el-input
-                    v-model="accountInput"
-                    placeholder="请输入账号"
-                  />
+                  <el-input v-model="accountInput" placeholder="请输入账号" />
                 </div>
                 <div style="padding-top: 20px">
                   <el-input
@@ -73,75 +70,74 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { loginTypes, isPhone, encryptorPassword } from "./index";
-import browser_utils from '@/utils/browser_utils';
-import { wxConf } from '@/config';
+import { useRoute, useRouter } from "vue-router";
+
+import browser_utils from "@/utils/browser_utils";
 import apiUserAuth from "./ServiceUserAuth";
 import ListTenants from "./ListTenants.vue";
 
-interface buildButton {
-  name: string;
-  key: string;
-  type: any;
-  icon: string;
-  effect: any;
-}
+import {
+  wecomUrl,
+  autoWecomUrl,
+  loginTypes,
+  isPhone,
+  encryptorPassword,
+  getLoginType,
+} from "./index";
 
 export default defineComponent({
   components: {
     ListTenants,
   },
   setup() {
-    // 账号
-    const accountInput = ref("");
-    // 密码
-    const passwordInput = ref("");
     const listTenantsComponents = ref();
-    const loginType = ref<buildButton[]>(loginTypes);
+    const loginType = ref<any[]>(loginTypes);
+    const route = useRoute(), router = useRouter();
+    const accountInput = ref(""), passwordInput = ref("");
 
     const changeLoginType = (selectedLoginType: string) => {
-      let tempLoginType = loginType.value;
-      let sLoginType: any = null;
-      for (let item of tempLoginType) {
-        item.type = selectedLoginType == item.key ? "primary" : "info";
-        if (selectedLoginType == item.key) {
-          sLoginType = item;
-        }
-      }
+      let sLoginType = getLoginType(selectedLoginType, loginType.value);
       if (sLoginType.useCode) {
         handleIconClick(sLoginType.key);
       }
     };
 
     const handleIconClick = (actionType: string) => {
-      if (actionType == "verifyCode") {
-        // 获取验证码
-      } else {
-        if (actionType == "authLogin") {
-          // 登录动作
-          apiUserAuth.login(
-            {
-              authType: isPhone(loginType.value) ? "PHONE" : "USERNAME",
-              username: accountInput.value,
-              authValue: encryptorPassword(passwordInput.value),
-              codeType: "login",
-            },
-            (identifyId: number, res: any) =>
-              listTenantsComponents.value.init(identifyId, res)
+      let redirect = route.query.redirect || '/';
+      switch (actionType) {
+        case "wecom": {
+          window.location.replace(wecomUrl);
+          break;
+        }
+        case "authLogin": {
+          let params = {
+            authType: isPhone(loginType.value) ? "PHONE" : "USERNAME",
+            username: accountInput.value,
+            authValue: encryptorPassword(passwordInput.value),
+            codeType: "login",
+          };
+          apiUserAuth.login(params, (identifyId: number, res: any) =>
+            listTenantsComponents.value.init(identifyId, res, redirect)
           );
-        } else if (actionType == "register") {
-          // 注册新账号
-        } else if (actionType == "wecom") {
-          window.location.replace(`${wxConf.codeScanningLoginUrl}?appid=${wxConf.corpid}&agentid=${wxConf.agentid}&redirect_uri=${encodeURI(wxConf.redirectUri)}&state=STATE`);
-        } else if (actionType == "wechat") {
-          // 微信登录
+          break;
+        }
+        case "verifyCode": {
+          break;
+        }
+        case "wechat": {
+          break;
+        }
+        case "register": {
+          break;
+        }
+        default: {
         }
       }
     };
-    
+
     onMounted(() => {
       if (browser_utils.isWx()) {
-        window.location.replace(`${wxConf.authorizedLoginUrl}?appid=${wxConf.corpid}&redirect_uri=${encodeURI(wxConf.redirectUri)}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect`);
+        window.location.replace(autoWecomUrl);
       }
     });
 
@@ -160,7 +156,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .auth-back {
-  min-height: 800px;
+  min-height: 1000px;
   background-image: linear-gradient(#4b3bf6, #df939a66);
 }
 .auth-title {
