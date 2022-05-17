@@ -11,12 +11,12 @@ const auxiliaryTools = {
   }, {
     title: "素材库",
     logo: tZeroDCloudResource,
-    url: "http://192.168.18.97",
+    url: "https://www.to0-ai.com/nextcloud",
     style: "background-color:rgb(150,200,100);"
   }, {
     title: "项目库",
     logo: tZeroDCloudProject,
-    url: "http://192.168.18.97",
+    url: "https://www.to0-ai.com/nextcloud",
     style: "background-color:rgb(150,200,200);"
   }]
 };

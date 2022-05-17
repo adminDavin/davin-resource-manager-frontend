@@ -51,7 +51,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
-    const userinfo = store.state.user.info;
+    const userinfo = store.state.userInfo.info;
 
     let paths = route.path.split("/");
     const activeName = paths.length > 2 ? ref(paths[2]) : ref("design_news");

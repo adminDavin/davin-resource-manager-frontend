@@ -7,13 +7,6 @@
         >
       </template>
     </el-tab-pane>
-    <!-- <el-tab-pane name="design_auxiliary_tools">
-      <template #label>
-        <strong :style="`font-size: var(--el-font-size-large)`"
-          >出入库操作记录</strong
-        >
-      </template>
-    </el-tab-pane> -->
   </el-tabs>
   <router-view></router-view>
 </template>
