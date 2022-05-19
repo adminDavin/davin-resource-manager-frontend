@@ -147,11 +147,12 @@ export default defineComponent({
     );
 
     onBeforeMount(() => {
-      if (!store.state.user.info.userId) {
+      console.log(store.state.userInfo.info);
+      if (!store.state.userInfo.info.id) {
         router.push({ path: "/login" });
       }
-      sessionStorage.setItem("tenantId", store.state.user.info.tenantId);
-      sessionStorage.setItem("userId", store.state.user.info.userId);
+      sessionStorage.setItem("tenantId", store.state.userInfo.info.tenantId);
+      sessionStorage.setItem("userId", store.state.userInfo.info.id);
     });
 
     onMounted(toRootResInfo);

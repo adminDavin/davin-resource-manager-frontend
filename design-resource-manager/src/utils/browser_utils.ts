@@ -66,5 +66,21 @@ export default {
             }
         }
         return obj;
-    }
+    },
+    getOptions: (baseURL: string, url: string) => {
+        return {
+            url,
+            baseURL,
+            method: "get",
+        }
+    },
+    postOptions: (baseURL: string, url: string, data: any) => {
+        return {
+            url,
+            baseURL,
+            method: "post",
+            data,
+            headers: {}
+        }
+    },
 } 

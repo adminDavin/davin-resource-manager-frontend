@@ -17,7 +17,6 @@ export function getInfoApi(data: object) {
     url: '/authorizer/info',
     method: 'post',
     baseURL: '/api/davin/uaa',
-    headers: {"userId": 'sdff'},
     data
   })
 }
