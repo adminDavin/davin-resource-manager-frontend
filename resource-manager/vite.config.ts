@@ -22,7 +22,19 @@ export default defineConfig({
         ws: false,
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, '')
-      }
+      },
+      '/apps': {
+        target: "https://39.106.63.176",
+        ws: false,
+        changeOrigin: true,
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/dav': {
+        target: "https://39.106.63.176/remote.php",
+        ws: false,
+        changeOrigin: true,
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      },
     },
   },
   

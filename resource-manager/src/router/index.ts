@@ -29,10 +29,16 @@ router.beforeEach((to, _from, next) => {
   } else {  // 没有登录的情况下
     let params = browser_utils.queryParams(document.location.toString(), true); 
     if (browser_utils.isEmpty(params['code'])) { // 如果请求路径参数中不包含code
-      if (to.path == whiteList[0]) { // 当前已经是即将跳转至登录页面 不做跳转处理
+      if (to.path == whiteList[0] || to.path.startsWith('/template_info')) { // 当前已经是即将跳转至登录页面 不做跳转处理
         next();
       } else { // 没有登录且请求参数中不包含code的情况下 默认跳转至登录页面
-        next("/login?redirect=/template_info");
+        console.log(params['redirect']);
+        if (params['redirect'] == '/template_info') {
+          next();
+        } else {
+          next("/login?redirect=/");
+        }
+        
       }
     } else { // 请求路径中包含code的情况 
       if (to.path == whiteList[1]) { // 当前即将跳转至登录过度页面 不做跳转处理

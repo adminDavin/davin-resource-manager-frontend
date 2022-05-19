@@ -44,8 +44,21 @@ const route: Route[] = [
   },
   {
     path: "/template_info",
+    redirect: '/template_info/project',
     component: () => import(/* webpackChunkName: 'template_info' */ "@/views/main/template_info/index.vue"),
-    meta: { }
+    meta: {},
+    children: [
+      {
+        path: "material",
+        component: () => import(/* webpackChunkName: 'template_infomaterial' */ "@/views/main/template_info/material/index.vue"),
+        meta: { }
+      },
+      {
+        path: "project",
+        component: () => import(/* webpackChunkName: 'template_infoproject' */ "@/views/main/template_info/project/index.vue"),
+        meta: { }
+      }
+    ]
   }
 ]
 
