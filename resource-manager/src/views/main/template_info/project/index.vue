@@ -1,5 +1,8 @@
 <template>
-  <el-row v-loading="dialogTableVisible" element-loading-text="项目正在创建中, 请等待...">
+  <el-row
+    v-loading="dialogTableVisible"
+    element-loading-text="项目正在创建中, 请等待..."
+  >
     <el-col :span="4">
       <el-image
         :src="tZeroDCloudProject"
@@ -26,7 +29,7 @@ import { defineComponent, ref } from "vue";
 import tZeroDCloudProject from "@/assets/room/scene_right.jpeg";
 import common_utils from "@/utils/common_utils";
 import alert_utils from "@/utils/alert_utils";
-import { projectTemplate, projectCreate, foldorCreate } from "./project01";
+import { projectTemplate, projectCreate, batchCreateFolder } from "./project01";
 
 export default defineComponent({
   setup() {
@@ -40,31 +43,25 @@ export default defineComponent({
         alert_utils.c_alert_e("请联系管理员进行排查", 2000);
         return;
       }
-      
+
       if (common_utils.isEmpty(projectName.value)) {
         alert_utils.c_alert_e("项目名称不可以为空", 2000);
         return;
       }
 
-      let parentPath = "projects";
-      let currentPath = `/${parentPath}/${projectName.value}`;
+      let parentPath = "";
+      let currentPath = `${parentPath}/${projectName.value}`;
       dialogTableVisible.value = true;
       projectCreate(uid, currentPath, async (data: any) => {
-        for (let folder in projectTemplate) {
-          let tempFolder = `${currentPath}/${folder}`;
-          await foldorCreate(uid, tempFolder);
-          if (projectTemplate[folder].length > 0) {
-            for (let childFolder of projectTemplate[folder]) {
-              let tempChildFolder = `${tempFolder}/${childFolder}`;
-              await foldorCreate(uid, tempChildFolder);
-            }
-          }
-        }
+        await batchCreateFolder(uid, currentPath, projectTemplate);
+        window.parent.location.replace("/nextcloud/index.php/apps/files");
         dialogTableVisible.value = false;
-        window.parent.location.replace('/nextcloud/index.php/apps/files');
+      }, () => {
+        dialogTableVisible.value = false;
+        alert_utils.c_alert_e("项目创建失败", 2000);
       });
     };
-  
+
     return {
       tZeroDCloudProject,
       projectName,

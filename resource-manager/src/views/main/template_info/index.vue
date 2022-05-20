@@ -14,14 +14,14 @@
           <el-icon><icon-menu /></el-icon>
           <template #title>项目模版</template>
         </el-menu-item>
-        <el-divider  content-position="left">相关资料模版</el-divider>
+        <!-- <el-divider  content-position="left">相关资料模版</el-divider>
         <el-menu-item
             :index="`/template_info/material?templateTypeCode=` + item.templateTypeCode + `&templateTypeName=` + item.templateTypeName"
             v-for="item in templateTypes"
             :key="item.id"
           >
             {{ item.templateTypeName }}
-          </el-menu-item>
+          </el-menu-item> -->
       </el-menu>
       <el-card shadow="never" style="width: 100%">
         <router-view :key="$route.fullPath"></router-view>
