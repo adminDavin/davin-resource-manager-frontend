@@ -25,8 +25,10 @@ export default defineComponent({
           name: "QYWX:" + params["code"],
           password: "123456",
         };
-        apiUserAuth.wecomLogin(loginInfo, (res: any) => {
+        apiUserAuth.wecomLogin(loginInfo, async (res: any) => {
+          res.data.id = res.data.userId;
           store.dispatch("userInfo/storeUserInfo", res.data);
+          console.log(res.data);
           router.push({ path: "/" });
         });
       }

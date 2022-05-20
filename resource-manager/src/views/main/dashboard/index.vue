@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute, RouteLocationRaw } from "vue-router";
 import c_alert from "@/utils/alert_utils";
@@ -55,7 +55,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
-    const userinfo = store.state.userInfo.info;
+    const userinfo = ref<any>({});
 
     let paths = route.path.split("/");
     const activeName = paths.length > 2 ? ref(paths[2]) : ref("design_news");
@@ -68,6 +68,14 @@ export default defineComponent({
       c_alert.c_alert_s("退出成功", "success", true, 5000);
       router.push((route.query.redirect as RouteLocationRaw) || "/login");
     };
+
+    onMounted(() => {
+      if (store.state.userInfo.info) {
+        userinfo.value = store.state.userInfo.info;
+      } else {
+        router.push({ path: "/login" });
+      }
+    });
 
     return {
       loginout,

@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Modules from './modules/index';
 import store from '@/store';
 import browser_utils from '@/utils/browser_utils';
+import c_utils from '@/utils/common_utils';
 
 
 const router = createRouter({
@@ -16,9 +17,10 @@ const whiteList = ['/login', '/waiting'];
 
 // 路由跳转前的监听操作
 router.beforeEach((to, _from, next) => {
-  if (!browser_utils.isObjEmpty(store.state.userInfo.info)) { // 验证是否已经登录
+  let userId: any = sessionStorage.getItem('userId');
+  if (!isNaN(userId)) { // 验证是否已经登录
     if (to.path == whiteList[1]) { // 如果已经登录 但是将要跳转到过度页面 默认跳转至首页
-      next('/dashboard');
+      next();
     } else { // 其他情况 不做跳转处理
       if (to.path == '/') {
         next('/dashboard');
@@ -37,11 +39,10 @@ router.beforeEach((to, _from, next) => {
           next();
         } else {
           next("/login?redirect=/");
-        }
-        
+        } 
       }
     } else { // 请求路径中包含code的情况 
-      if (to.path == whiteList[1]) { // 当前即将跳转至登录过度页面 不做跳转处理
+      if (to.path == whiteList[1] || to.path.startsWith('/template_info')) { // 当前即将跳转至登录过度页面 不做跳转处理
         next();
       } else {  // 没有登录但请求参数中包含code的情况下 默认跳转至登录过度页面
         next("/waiting");

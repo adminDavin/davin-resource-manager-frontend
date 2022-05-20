@@ -31,6 +31,17 @@ function isEmpty(val: any) {
   return false;
 }
 
+function isNumber(val: any) {
+  var regPos = /^\d+(\.\d+)?$/;
+  var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/;
+  
+  if (regPos.test(val) && regNeg.test(val)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 export default {
-  isEmpty: isEmpty
+  isEmpty,
+  isNumber
 }
