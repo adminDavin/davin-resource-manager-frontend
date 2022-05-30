@@ -3,7 +3,7 @@
     <div style="display: flex; margin-top: 0.6rem; margin-left: 0.6rem">
       <el-avatar
         size="default"
-        :src="userinfo.userDesc['avatar']"
+        :src="avatar"
         @click="loginout"
       ></el-avatar>
       <div style="margin-top: 0.6rem; margin-left: 0.6rem">
@@ -56,7 +56,7 @@ export default defineComponent({
     const route = useRoute();
 
     const userinfo = ref<any>({});
-
+    const avatar = ref();
     let paths = route.path.split("/");
     const activeName = paths.length > 2 ? ref(paths[2]) : ref("design_news");
 
@@ -72,6 +72,8 @@ export default defineComponent({
     onMounted(() => {
       if (store.state.userInfo.info) {
         userinfo.value = store.state.userInfo.info;
+        console.log(userinfo);
+        avatar.value =  userinfo ? userinfo.userDesc['avatar']: '';
       } else {
         router.push({ path: "/login" });
       }
@@ -80,6 +82,7 @@ export default defineComponent({
     return {
       loginout,
       userinfo,
+      avatar,
       activeName,
       handleClick,
     };

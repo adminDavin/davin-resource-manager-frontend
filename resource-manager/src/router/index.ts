@@ -18,7 +18,7 @@ const whiteList = ['/login', '/waiting'];
 // 路由跳转前的监听操作
 router.beforeEach((to, _from, next) => {
   let userId: any = sessionStorage.getItem('userId');
-  if (!isNaN(userId)) { // 验证是否已经登录
+  if (!isNaN(userId) && userId != null) { // 验证是否已经登录
     if (to.path == whiteList[1]) { // 如果已经登录 但是将要跳转到过度页面 默认跳转至首页
       next();
     } else { // 其他情况 不做跳转处理
@@ -30,8 +30,9 @@ router.beforeEach((to, _from, next) => {
     }
   } else {  // 没有登录的情况下
     let params = browser_utils.queryParams(document.location.toString(), true); 
+    console.log(params);
     if (browser_utils.isEmpty(params['code'])) { // 如果请求路径参数中不包含code
-      if (to.path == whiteList[0] || to.path.startsWith('/template_info')) { // 当前已经是即将跳转至登录页面 不做跳转处理
+      if (to.path == whiteList[0] || to.path == whiteList[1] || to.path.startsWith('/template_info')) { // 当前已经是即将跳转至登录页面 不做跳转处理
         next();
       } else { // 没有登录且请求参数中不包含code的情况下 默认跳转至登录页面
         console.log(params['redirect']);
