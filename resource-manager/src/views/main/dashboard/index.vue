@@ -72,8 +72,8 @@ export default defineComponent({
     onMounted(() => {
       if (store.state.userInfo.info) {
         userinfo.value = store.state.userInfo.info;
-        console.log(userinfo);
-        avatar.value =  userinfo ? userinfo.userDesc['avatar']: '';
+        console.log(userinfo, 'ddddd');
+        avatar.value =  userinfo.value.userDesc ? userinfo.value.userDesc['avatar']: '';
       } else {
         router.push({ path: "/login" });
       }
