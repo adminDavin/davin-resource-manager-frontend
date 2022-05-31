@@ -43,25 +43,37 @@ const getParams = (uid: string, tempFolder: string) => {
   }
 }
 
-const foldorCreate = async (uid: string, tempFolder: string) => {
-  await axios.request(getParams(uid, tempFolder))
+const foldorCreate = async (uid: string, tempFolder: string, headers: any) => {
+  let params = getParams(uid, tempFolder);
+  // if (headers != null) { 
+  //   params['headers'] = headers
+  // }
+  await axios.request(params)
     .then(() => alert_utils.c_alert_success(`项目路径: ${tempFolder} 创建成功`, 1000))
     .catch((error) => {
       console.log(error);
-      alert_utils.c_alert_e(`项目路径: ${tempFolder}, 创建失败`, 2000);
+      alert_utils.c_alert_e(`项目路径: ${tempFolder}, 创建失败. ${error}`, 2000);
     });
 }
 
-const projectCreate = (uid: string, folderName: string, callback: Function, error1: Function) => {
-  axios.request(getParams(uid, folderName))
+const projectCreate = (uid: string, folderName: string, headers: any, callback: Function, error1: Function) => {
+  let params = getParams(uid, folderName);
+  // if (headers != null) { 
+  //   params['headers'] = headers
+  //   params['auth'] = {
+  //     username: 'david',
+  //     password: 'Davin1203'
+  //   }
+  // }
+  axios.request(params)
     .then(({ data }) => callback(data))
-    .catch((error) => {
-      console.log(error);
-      error1();
+    .catch((e) => {
+      console.log(e);
+      error1(e);
     });
 }
 
-const batchCreateFolder = async (uid: string, tempFolder: string, projectData: any, selectIds: any) => {
+const batchCreateFolder = async (uid: string, tempFolder: string, headers: any, projectData: any, selectIds: any) => {
   if (!projectData) { 
     return;
   }
@@ -70,9 +82,9 @@ const batchCreateFolder = async (uid: string, tempFolder: string, projectData: a
     let igore = selectIds.indexOf(childFolder.id) > -1;
     console.log(tempChildFolder, igore);
     if (igore) { 
-      await foldorCreate(uid, tempChildFolder);
+      await foldorCreate(uid, tempChildFolder, headers);
     }
-    await batchCreateFolder(uid, tempFolder, childFolder.children, selectIds);
+    await batchCreateFolder(uid, tempFolder, headers, childFolder.children, selectIds);
   }
 };
 
